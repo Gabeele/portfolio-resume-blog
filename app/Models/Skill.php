@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Proficiency;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,6 +18,13 @@ class Skill extends Model
         'additional_evidence',
         'user_id',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'proficiency' => Proficiency::class,
+        ];
+    }
 
     public function user(): BelongsTo
     {
