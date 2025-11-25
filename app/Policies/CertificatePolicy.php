@@ -1,54 +1,70 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\Certificate;
-use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User as AuthUser;
 
 class CertificatePolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny(User $user): bool
+    public function viewAny(AuthUser $authUser): bool
     {
-        return true;
+        return $authUser->can('ViewAny:Certificate');
     }
 
-    public function view(User $user, Certificate $certificate): bool
+    public function view(AuthUser $authUser, Certificate $certificate): bool
     {
-        return $user->hasCertificate($certificate);
+        return $authUser->can('View:Certificate');
     }
 
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return true;
+        return $authUser->can('Create:Certificate');
     }
 
-    public function update(User $user, Certificate $certificate): bool
+    public function update(AuthUser $authUser, Certificate $certificate): bool
     {
-        return $user->hasCertificate($certificate);
-
+        return $authUser->can('Update:Certificate');
     }
 
-    public function delete(User $user, Certificate $certificate): bool
+    public function delete(AuthUser $authUser, Certificate $certificate): bool
     {
-        return $user->hasCertificate($certificate);
-
+        return $authUser->can('Delete:Certificate');
     }
 
-    public function deleteAny(User $user): bool
+    public function restore(AuthUser $authUser, Certificate $certificate): bool
     {
-        return true;
+        return $authUser->can('Restore:Certificate');
     }
 
-    public function restore(User $user, Certificate $certificate): bool
+    public function forceDelete(AuthUser $authUser, Certificate $certificate): bool
     {
-        return $user->isAdmin();
+        return $authUser->can('ForceDelete:Certificate');
     }
 
-    public function forceDelete(User $user, Certificate $certificate): bool
+    public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $user->isAdmin();
+        return $authUser->can('ForceDeleteAny:Certificate');
     }
+
+    public function restoreAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('RestoreAny:Certificate');
+    }
+
+    public function replicate(AuthUser $authUser, Certificate $certificate): bool
+    {
+        return $authUser->can('Replicate:Certificate');
+    }
+
+    public function reorder(AuthUser $authUser): bool
+    {
+        return $authUser->can('Reorder:Certificate');
+    }
+
 }

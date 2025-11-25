@@ -1,58 +1,70 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\Skill;
-use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User as AuthUser;
 
 class SkillPolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny(User $user): bool
+    public function viewAny(AuthUser $authUser): bool
     {
-        return true;
+        return $authUser->can('ViewAny:Skill');
     }
 
-    public function view(User $user, Skill $skill): bool
+    public function view(AuthUser $authUser, Skill $skill): bool
     {
-        return $user->hasSkill($skill);
+        return $authUser->can('View:Skill');
     }
 
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return true;
+        return $authUser->can('Create:Skill');
     }
 
-    public function update(User $user, Skill $skill): bool
+    public function update(AuthUser $authUser, Skill $skill): bool
     {
-        return $user->hasSkill($skill);
-
+        return $authUser->can('Update:Skill');
     }
 
-    public function delete(User $user, Skill $skill): bool
+    public function delete(AuthUser $authUser, Skill $skill): bool
     {
-        return $user->hasSkill($skill);
-
+        return $authUser->can('Delete:Skill');
     }
 
-
-    public function deleteAny(User $user): bool
+    public function restore(AuthUser $authUser, Skill $skill): bool
     {
-        return true;
-
+        return $authUser->can('Restore:Skill');
     }
 
-    public function restore(User $user, Skill $skill): bool
+    public function forceDelete(AuthUser $authUser, Skill $skill): bool
     {
-        return $user->isAdmin();
-
+        return $authUser->can('ForceDelete:Skill');
     }
 
-    public function forceDelete(User $user, Skill $skill): bool
+    public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $user->isAdmin();
-
+        return $authUser->can('ForceDeleteAny:Skill');
     }
+
+    public function restoreAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('RestoreAny:Skill');
+    }
+
+    public function replicate(AuthUser $authUser, Skill $skill): bool
+    {
+        return $authUser->can('Replicate:Skill');
+    }
+
+    public function reorder(AuthUser $authUser): bool
+    {
+        return $authUser->can('Reorder:Skill');
+    }
+
 }

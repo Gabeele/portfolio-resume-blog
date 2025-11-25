@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Enums\AuthLayout;
 use DutchCodingCompany\FilamentDeveloperLogins\FilamentDeveloperLoginsPlugin;
@@ -35,11 +36,12 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->userMenu(position: UserMenuPosition::Sidebar)
             ->topbar(false)->databaseTransactions()
-            ->strictAuthorization()
             ->navigationGroups([
                 NavigationGroup::make('Portfolio')
                     ->icon('heroicon-o-user-circle')
                     ->collapsible(false),
+                NavigationGroup::make('Admin'),
+//                    ->icon(HeroIcon::OutlinedWrenchScrewdriver),
             ])
             ->brandName('Paperclip')
             ->colors([
@@ -57,8 +59,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins(
                 [
+                    FilamentShieldPlugin::make()
+                        ->navigationGroup('Admin'),
                     FilamentDeveloperLoginsPlugin::make()
                         ->enabled(app()->environment('local'))
+                        ->switchable(true)
                         ->users([
                             'Test' => 'test@example.com',
                             'Admin' => 'admin@example.com',
