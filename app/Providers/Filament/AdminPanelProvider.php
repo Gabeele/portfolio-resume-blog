@@ -2,7 +2,10 @@
 
 namespace App\Providers\Filament;
 
+use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
+use Caresome\FilamentAuthDesigner\Enums\AuthLayout;
 use DutchCodingCompany\FilamentDeveloperLogins\FilamentDeveloperLoginsPlugin;
+use Filament\Enums\UserMenuPosition;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -30,11 +33,15 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->userMenu(position: UserMenuPosition::Sidebar)
+            ->topbar(false)->databaseTransactions()
+            ->strictAuthorization()
             ->navigationGroups([
                 NavigationGroup::make('Portfolio')
                     ->icon('heroicon-o-user-circle')
                     ->collapsible(false),
             ])
+            ->brandName('Paperclip')
             ->colors([
                 'primary' => Color::Indigo,
             ])
@@ -55,7 +62,9 @@ class AdminPanelProvider extends PanelProvider
                         ->users([
                             'Test' => 'test@example.com',
                             'Admin' => 'admin@example.com',
-                        ])
+                        ]),
+                    AuthDesignerPlugin::make()
+                        ->login(layout: AuthLayout::None)
                 ])
             ->middleware([
                 EncryptCookies::class,

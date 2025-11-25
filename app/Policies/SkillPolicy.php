@@ -37,6 +37,13 @@ class SkillPolicy
 
     }
 
+
+    public function deleteAny(User $user): bool
+    {
+        return true;
+
+    }
+
     public function restore(User $user, Skill $skill): bool
     {
         return $user->isAdmin();
