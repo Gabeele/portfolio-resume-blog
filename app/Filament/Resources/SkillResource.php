@@ -42,7 +42,7 @@ class SkillResource extends Resource
                 RichEditor::make('additional_evidence')
                     ->label('Additional Comments')
                     ->helperText('Provide any additional information or evidence related to this skill.')
-                    ->toolbarButtons(['bold', 'bulletList', 'italic', 'link', 'orderedList', 'redo', 'underline', 'undo'])
+                    ->toolbarButtons(['bold', 'underline', 'italic', 'link', 'bulletList', 'orderedList', 'redo', 'undo'])
                     ->columnSpanFull(),
 
                 TextEntry::make('created_at')

@@ -64,4 +64,14 @@ class User extends Authenticatable
     {
         return $this->skills()->where('id', $skill->id)->exists();
     }
+
+    public function certificates(): HasMany
+    {
+        return $this->hasMany(Certificate::class);
+    }
+
+    public function hasCertificate(Certificate $certificate): bool
+    {
+        return $this->certificates()->where('id', $certificate->id)->exists();
+    }
 }
