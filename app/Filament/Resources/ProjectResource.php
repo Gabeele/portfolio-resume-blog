@@ -15,7 +15,6 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -83,7 +82,6 @@ class ProjectResource extends Resource
 
             ])
             ->filters([
-                TrashedFilter::make(),
             ])
             ->recordActions([
                 EditAction::make(),

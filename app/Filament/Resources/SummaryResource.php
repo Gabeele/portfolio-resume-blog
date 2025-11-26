@@ -2,51 +2,35 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\EducationResource\Pages;
-use App\Models\Education;
+use App\Filament\Resources\SummaryResource\Pages;
+use App\Models\Summary;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use UnitEnum;
 
-class EducationResource extends Resource
+class SummaryResource extends Resource
 {
-    protected static ?string $model = Education::class;
+    protected static ?string $model = Summary::class;
 
-    protected static ?string $slug = 'education';
+    protected static ?string $slug = 'summaries';
     protected static string|UnitEnum|null $navigationGroup = 'Portfolio';
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                TextInput::make('school')
-                    ->columnSpan(1)
-                    ->required(),
-
-                TextInput::make('certificate')
-                    ->columnSpan(1)
-                    ->required(),
-
-                DatePicker::make('start')
-                    ->columnSpan(1)
-                    ->required(),
-
-                DatePicker::make('end')
-                    ->columnSpan(1),
-
-                RichEditor::make('description')
+                RichEditor::make('body')
                     ->toolbarButtons(['bold', 'italic', 'link', 'bulletList', 'orderedList', 'redo', 'undo'])
                     ->columnSpanFull()
                     ->required(),
@@ -54,12 +38,12 @@ class EducationResource extends Resource
                 TextEntry::make('created_at')
                     ->label('Created Date')
                     ->hiddenOn('create')
-                    ->state(fn(?Education $record): string => $record?->created_at?->diffForHumans() ?? '-'),
+                    ->state(fn(?Summary $record): string => $record?->created_at?->diffForHumans() ?? '-'),
 
                 TextEntry::make('updated_at')
                     ->label('Last Modified Date')
                     ->hiddenOn('create')
-                    ->state(fn(?Education $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
+                    ->state(fn(?Summary $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
             ]);
     }
 
@@ -67,15 +51,9 @@ class EducationResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('school'),
-
-                TextColumn::make('certificate'),
-
-                TextColumn::make('start')
-                    ->date(),
-
-                TextColumn::make('end')
-                    ->date(),
+                TextColumn::make('body')
+                    ->html()
+                    ->limit(50),
             ])
             ->filters([
             ])
@@ -93,9 +71,9 @@ class EducationResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListEducations::route('/'),
-            'create' => Pages\CreateEducation::route('/create'),
-            'edit' => Pages\EditEducation::route('/{record}/edit'),
+            'index' => Pages\ListSummaries::route('/'),
+            'create' => Pages\CreateSummary::route('/create'),
+            'edit' => Pages\EditSummary::route('/{record}/edit'),
         ];
     }
 
@@ -107,8 +85,24 @@ class EducationResource extends Resource
             ]);
     }
 
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with(['user']);
+    }
+
     public static function getGloballySearchableAttributes(): array
     {
-        return [];
+        return ['user.name'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        $details = [];
+
+        if ($record->user) {
+            $details['User'] = $record->user->name;
+        }
+
+        return $details;
     }
 }
