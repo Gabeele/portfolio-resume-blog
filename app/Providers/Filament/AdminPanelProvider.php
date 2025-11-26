@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use AchyutN\FilamentLogViewer\FilamentLogViewer;
 use App\Filament\Pages\Backups;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Boquizo\FilamentLogViewer\FilamentLogViewerPlugin;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Enums\AuthLayout;
 use DutchCodingCompany\FilamentDeveloperLogins\FilamentDeveloperLoginsPlugin;
@@ -74,11 +75,8 @@ class AdminPanelProvider extends PanelProvider
                     AuthDesignerPlugin::make()
                         ->login(layout: AuthLayout::None),
                     FilamentSpatieLaravelBackupPlugin::make()
-                        ->usingPage(Backups::class)
-                    ,
-                    FilamentLogViewer::make()
-                        ->navigationGroup('Admin')
-                    ,
+                        ->usingPage(Backups::class),
+
                 ])
             ->middleware([
                 EncryptCookies::class,

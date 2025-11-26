@@ -37,11 +37,6 @@ class WorkExperiencePolicy
         return $authUser->can('Delete:WorkExperience');
     }
 
-    public function deleteAny(AuthUser $authUser): bool
-    {
-        return $authUser->can('DeleteAny:WorkExperience');
-    }
-
     public function restore(AuthUser $authUser, WorkExperience $workExperience): bool
     {
         return $authUser->can('Restore:WorkExperience');

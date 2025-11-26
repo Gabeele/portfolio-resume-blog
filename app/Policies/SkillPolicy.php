@@ -37,11 +37,6 @@ class SkillPolicy
         return $authUser->can('Delete:Skill');
     }
 
-    public function deleteAny(AuthUser $authUser): bool
-    {
-        return $authUser->can('DeleteAny:Skill');
-    }
-
     public function restore(AuthUser $authUser, Skill $skill): bool
     {
         return $authUser->can('Restore:Skill');

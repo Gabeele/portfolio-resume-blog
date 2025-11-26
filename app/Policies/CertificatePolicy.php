@@ -37,11 +37,6 @@ class CertificatePolicy
         return $authUser->can('Delete:Certificate');
     }
 
-    public function deleteAny(AuthUser $authUser): bool
-    {
-        return $authUser->can('DeleteAny:Certificate');
-    }
-
     public function restore(AuthUser $authUser, Certificate $certificate): bool
     {
         return $authUser->can('Restore:Certificate');
