@@ -4,9 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProjectResource\Pages;
 use App\Models\Project;
-use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
@@ -14,11 +12,14 @@ use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Layout\Grid;
+use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use UnitEnum;
 
 class ProjectResource extends Resource
@@ -72,15 +73,31 @@ class ProjectResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('title')
-                    ->searchable()
-                    ->sortable(),
+                Grid::make()
+                    ->columns(1)
+                    ->schema([
+                        Split::make([
+                            Grid::make()
+                                ->columns(1)
+                                ->schema([
+                                    ImageColumn::make('image')
+                                        ->imageHeight('100px')
+                                        ->imageWidth('100px')
+                                ])->grow(false)
+                        ]),
+                        Stack::make([
+                            TextColumn::make('title'),
+                            TextColumn::make('url'),
 
-                TextColumn::make('url'),
-
-                TextColumn::make('repo'),
-
+                            TextColumn::make('repo'),
+                        ])
+                            ->grow(),
+                    ]),
             ])
+            ->contentGrid(
+                ['md' => 2,
+                    'xl' => 3,]
+            )
             ->filters([
             ])
             ->recordActions([
@@ -88,9 +105,9 @@ class ProjectResource extends Resource
                 DeleteAction::make(),
             ])
             ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+//                BulkActionGroup::make([
+//                    DeleteBulkAction::make(),
+//                ]),
             ]);
     }
 
@@ -105,10 +122,7 @@ class ProjectResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
+        return parent::getEloquentQuery();
     }
 
     public static function getGlobalSearchEloquentQuery(): Builder

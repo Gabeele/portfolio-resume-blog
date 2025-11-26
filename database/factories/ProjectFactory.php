@@ -19,7 +19,7 @@ class ProjectFactory extends Factory
             'description' => $this->faker->text(),
             'url' => $this->faker->url(),
             'repo' => $this->faker->word(),
-            'image' => $this->faker->word(),
+            'image' => 'https://picsum.photos/200/300',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
 
