@@ -2,20 +2,22 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
+use App\Models\WorkExperience;
 use Illuminate\Database\Seeder;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-class DatabaseSeeder extends Seeder
+class WorkExperienceSeeder extends Seeder
 {
     /**
      * Seed the application's database.
      */
     public function run(): void
     {
-        app(UserSeeder::class)->run();
-        app(SkillSeeder::class)->run();
-        app(CertificateSeeder::class)->run();
-        app(WorkExperienceSeeder::class)->run();
+        WorkExperience::factory(10)->create([
+            'user_id' => User::where('email', 'test@example.com')->first()->id
+
+        ]);
     }
 }
