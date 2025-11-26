@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use AchyutN\FilamentLogViewer\FilamentLogViewer;
+use App\Filament\Pages\Backups;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Enums\AuthLayout;
@@ -24,6 +26,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -69,7 +72,13 @@ class AdminPanelProvider extends PanelProvider
                             'Admin' => 'admin@example.com',
                         ]),
                     AuthDesignerPlugin::make()
-                        ->login(layout: AuthLayout::None)
+                        ->login(layout: AuthLayout::None),
+                    FilamentSpatieLaravelBackupPlugin::make()
+                        ->usingPage(Backups::class)
+                    ,
+                    FilamentLogViewer::make()
+                        ->navigationGroup('Admin')
+                    ,
                 ])
             ->middleware([
                 EncryptCookies::class,
