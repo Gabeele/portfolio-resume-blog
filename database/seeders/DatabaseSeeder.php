@@ -18,5 +18,6 @@ class DatabaseSeeder extends Seeder
         app(CertificateSeeder::class)->run();
         app(WorkExperienceSeeder::class)->run();
         app(EducationSeeder::class)->run();
+        app(ProjectSeeder::class)->run();
     }
 }
