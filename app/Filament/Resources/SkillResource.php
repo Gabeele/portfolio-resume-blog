@@ -5,10 +5,6 @@ namespace App\Filament\Resources;
 use App\Enums\Proficiency;
 use App\Filament\Resources\SkillResource\Pages;
 use App\Models\Skill;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
@@ -61,9 +57,7 @@ class SkillResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
-                    ->searchable()
-                    ->sortable(),
+                TextColumn::make('name'),
 
                 TextColumn::make('proficiency')
                     ->badge(),
@@ -72,28 +66,8 @@ class SkillResource extends Resource
                     ->label('Additional Comments')
                     ->html()
                     ->limit(50),
-                TextColumn::make('created_at')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->dateTime(),
-
-                TextColumn::make('updated_at')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->dateTime(),
-
             ])
-            ->filters([
-            ])
-            ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->paginated(fn(Table $table): int => 10);;
     }
 
     public static function getPages(): array

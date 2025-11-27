@@ -4,10 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SummaryResource\Pages;
 use App\Models\Summary;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Forms\Components\RichEditor;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
@@ -54,17 +50,7 @@ class SummaryResource extends Resource
                     ->html()
                     ->limit(50),
             ])
-            ->filters([
-            ])
-            ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->paginated(fn(Table $table): int => 10);;
     }
 
     public static function getPages(): array

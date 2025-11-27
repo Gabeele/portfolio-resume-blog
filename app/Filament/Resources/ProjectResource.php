@@ -4,8 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProjectResource\Pages;
 use App\Models\Project;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\EditAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
@@ -35,10 +33,12 @@ class ProjectResource extends Resource
         return $schema
             ->components([
                 TextInput::make('title')
-                    ->required(),
+                    ->required()
+                    ->maxLength(255),
 
                 TextInput::make('role')
-                    ->required(),
+                    ->required()
+                    ->maxLength(120),
 
                 RichEditor::make('description')
                     ->toolbarButtons(['bold', 'italic', 'link', 'bulletList', 'orderedList', 'redo', 'undo'])
@@ -46,16 +46,19 @@ class ProjectResource extends Resource
                     ->required(),
 
                 TextInput::make('url')
-                    ->url(),
+                    ->url()
+                    ->maxLength(255),
 
                 TextInput::make('repo')
                     ->label('Repository Link')
-                    ->url(),
+                    ->url()
+                    ->maxLength(255),
 
                 FileUpload::make('image')
                     ->label('Image')
                     ->columnSpanFull()
-                    ->image(),
+                    ->image()
+                    ->imagePreviewHeight('250'),
 
                 TextEntry::make('created_at')
                     ->label('Created Date')
@@ -74,41 +77,55 @@ class ProjectResource extends Resource
         return $table
             ->columns([
                 Grid::make()
-                    ->columns(1)
                     ->schema([
                         Split::make([
-                            Grid::make()
-                                ->columns(1)
-                                ->schema([
-                                    ImageColumn::make('image')
-                                        ->imageHeight('100px')
-                                        ->imageWidth('100px')
-                                ])->grow(false)
-                        ]),
-                        Stack::make([
-                            TextColumn::make('title'),
-                            TextColumn::make('url'),
+                            ImageColumn::make('image')
+                                ->label('')
+                                ->imageHeight('80')
+                                ->imageWidth('80'),
+                            Stack::make([
+                                TextColumn::make('title')
+                                    ->label('Title')
+                                    ->weight('bold')
+                                    ->limit(60),
 
-                            TextColumn::make('repo'),
-                        ])
-                            ->grow(),
-                    ]),
+                                TextColumn::make('role')
+                                    ->label('Role')
+                                    ->toggleable()
+                                    ->extraAttributes(['class' => 'text-sm text-gray-500']),
+
+                                TextColumn::make('description')
+                                    ->label('Description')
+                                    ->html()
+                                    ->limit(50)
+                                    ->wrap(),
+
+                                Grid::make()
+                                    ->columns(2)
+                                    ->schema([
+                                        TextColumn::make('url')
+                                            ->label('Live')
+                                            ->formatStateUsing(fn($state, $record) => $state ? 'Project' : null)
+                                            ->url(fn($record) => $record->url)
+                                            ->openUrlInNewTab(),
+
+                                        TextColumn::make('repo')
+                                            ->label('Repo')
+                                            ->formatStateUsing(fn($state, $record) => $state ? 'Repo' : null)
+                                            ->url(fn($record) => $record->repo)
+                                            ->openUrlInNewTab(),
+                                    ]),
+                            ])->grow(),
+                        ]),
+                    ])
+                    ->columns(1),
             ])
-            ->contentGrid(
-                ['md' => 2,
-                    'xl' => 3,]
-            )
-            ->filters([
+            ->contentGrid([
+                'md' => 1,
+                'xl' => 2,
             ])
-            ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
-            ])
-            ->toolbarActions([
-//                BulkActionGroup::make([
-//                    DeleteBulkAction::make(),
-//                ]),
-            ]);
+            ->defaultSort('created_at', 'desc')
+            ->paginated(fn(Table $table): int => 10);
     }
 
     public static function getPages(): array

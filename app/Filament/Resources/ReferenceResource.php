@@ -4,10 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ReferenceResource\Pages;
 use App\Models\Reference;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
@@ -59,33 +55,17 @@ class ReferenceResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
-                    ->searchable()
-                    ->sortable(),
+                TextColumn::make('name'),
 
-                TextColumn::make('title')
-                    ->searchable()
-                    ->sortable(),
+                TextColumn::make('title'),
 
                 TextColumn::make('phone'),
 
-                TextColumn::make('email')
-                    ->searchable()
-                    ->sortable(),
+                TextColumn::make('email'),
 
                 TextColumn::make('company'),
             ])
-            ->filters([
-            ])
-            ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->paginated(fn(Table $table): int => 10);;
     }
 
     public static function getPages(): array

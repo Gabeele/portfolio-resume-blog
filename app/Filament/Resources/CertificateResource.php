@@ -4,10 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CertificateResource\Pages;
 use App\Models\Certificate;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
@@ -69,8 +65,7 @@ class CertificateResource extends Resource
         return $table
             ->columns([
                 Stack::make([
-                    TextColumn::make('name')
-                        ->searchable(),
+                    TextColumn::make('name'),
                     TextColumn::make('created_at')
                         ->label('Created')
                         ->dateTime(),
@@ -80,17 +75,7 @@ class CertificateResource extends Resource
                 'md' => 2,
                 'xl' => 3,
             ])
-            ->filters([
-            ])
-            ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->paginated(fn(Table $table): int => 10);
     }
 
     public static function getPages(): array

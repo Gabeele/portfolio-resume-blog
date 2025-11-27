@@ -4,10 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\WorkExperienceResource\Pages;
 use App\Models\WorkExperience;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
@@ -77,31 +73,14 @@ class WorkExperienceResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                TextColumn::make('business')
-                    ->searchable(),
+            ->paginated(fn(Table $table): int => 10)->columns([
+                TextColumn::make('business'),
                 TextColumn::make('location'),
-
                 TextColumn::make('role'),
-
                 TextColumn::make('start')
-                    ->sortable()
                     ->date(),
-
                 TextColumn::make('end')
                     ->date(),
-
-            ])
-            ->filters([
-            ])
-            ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ]);
     }
 
