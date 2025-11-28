@@ -3,6 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ResumeResource\Pages;
+use App\Filament\Resources\ResumeResource\RelationManagers\WorkExpereincesRelationManager;
+use App\Filament\Resources\ResumeResource\RelationManagers\WorkExperiencesRelationManager;
 use App\Models\Resume;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -10,6 +12,8 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
@@ -21,6 +25,7 @@ use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use UnitEnum;
 
 class ResumeResource extends Resource
@@ -35,24 +40,151 @@ class ResumeResource extends Resource
         return $schema
             ->components([
                 Section::make('Resume')
+                    ->description('Base information for this resume. Give it a clear name and add tags for grouping.')
                     ->schema([
-                TextInput::make('name')
-                    ->placeholder('Coffee shop resume')
-                    ->required(),
+                        TextInput::make('name')
+                            ->placeholder('e.g. Coffee shop resume')
+                            ->required()
+                            ->columnSpanFull(),
 
                         TagsInput::make('tags')
-                            ->helperText('Use tags to organize and group resumes.'),
-                    ]),
+                            ->helperText('Use tags to organize and group resumes (e.g. "barista", "management").')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(1)
+                    ->columnSpanFull(),
+
+                Section::make('Summaries')
+                    ->description('Short summary snippets you can include on the resume. Check the ones you want to include.')
+                    ->schema([
+                        CheckboxList::make('summaries')
+                            ->label('Summaries')
+                            ->relationship('summaries', 'body')
+                            ->getOptionLabelFromRecordUsing(function (Model $record) {
+                                return $record->title
+                                    ?? Str::limit(strip_tags($record->body ?? ''), 100)
+                                    ?? "ID {$record->id}";
+                            })
+                            ->columnSpanFull()
+                            ->columns(2)
+                            ->helperText('Choose summary snippets (title or excerpt) to show in this resume.'),
+                    ])
+                    ->columns(1)
+                    ->columnSpanFull(),
+
+                Section::make('Work Experience')
+                    ->description('Select the work experiences to include. Each option shows company, role, and date range.')
+                    ->schema([
+                        CheckboxList::make('work_experiences')
+                            ->label('Work Experience')
+                            ->relationship('workExperiences', 'business')
+                            ->getOptionLabelFromRecordUsing(function (Model $record) {
+                                $start = $record->start?->format('M Y') ?? '—';
+                                $end = $record->end?->format('M Y') ?? 'Present';
+
+                                return sprintf(
+                                    "%s\n%s\n%s → %s",
+                                    strtoupper($record->business ?? ($record->name ?? '')),
+                                    $record->role ?? '',
+                                    $start,
+                                    $end,
+                                );
+                            })
+                            ->columnSpanFull()
+                            ->columns(2)
+                            ->helperText('Check entries to include; the labels include role and date range.'),
+                    ])
+                    ->columns(1)
+                    ->columnSpanFull(),
+
+                Section::make('Education')
+                    ->description('Choose education entries to include (degree and school). Use search to find entries quickly.')
+                    ->schema([
+                        Select::make('education')
+                            ->label('Education')
+                            ->multiple()
+                            ->searchable()
+                            ->preload()
+                            ->relationship('education', 'school')
+                            ->getOptionLabelFromRecordUsing(function (Model $record) {
+                                $degree = $record->degree ?? null;
+                                $school = $record->school ?? $record->name ?? null;
+
+                                if ($degree && $school) {
+                                    return sprintf('%s — %s', $degree, $school);
+                                }
+
+                                return $school ?? $degree ?? "ID {$record->id}";
+                            })
+                            ->helperText('Select one or more education entries to include.')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(1)
+                    ->columnSpanFull(),
+                Section::make('Projects')
+                    ->description('Select project entries to include. Use this for featured work or portfolio items.')
+                    ->schema([
+                        CheckboxList::make('projects')
+                            ->label('Projects')
+                            ->relationship('projects', 'title')
+                            ->getOptionLabelFromRecordUsing(function (Model $record) {
+                                return $record->title ?? $record->name ?? "ID {$record->id}";
+                            })
+                            ->columnSpanFull()
+                            ->columns(2)
+                            ->helperText('Choose projects to display on the resume.'),
+                    ])
+                    ->columns(1)
+                    ->columnSpanFull(),
+                Section::make('Skills & Certificates')
+                    ->description('Group related items: skills on the left and certificates on the right. Both are searchable and preloaded.')
+                    ->schema([
+                        Select::make('skills')
+                            ->label('Skills')
+                            ->multiple()
+                            ->searchable()
+                            ->preload()
+                            ->relationship('skills', 'name')
+                            ->helperText('Search and select multiple skills.'),
+
+                        Select::make('certificates')
+                            ->label('Certificates')
+                            ->multiple()
+                            ->searchable()
+                            ->preload()
+                            ->relationship('certificates', 'name')
+                            ->helperText('Search and select certificates to include.'),
+                    ])
+                    ->columns(2)
+                    ->columnSpanFull(),
+                Section::make('References')
+                    ->description('Choose references to show on this resume. Typically a short list of contacts or referees.')
+                    ->schema([
+                        Select::make('references')
+                            ->label('References')
+                            ->multiple()
+                            ->searchable()
+                            ->preload()
+                            ->relationship('references', 'name')
+                            ->getOptionLabelFromRecordUsing(function (Model $record) {
+                                return $record->name ?? ($record->contact_name ?? "ID {$record->id}");
+                            })
+                            ->helperText('Select references to include.'),
+                    ])
+                    ->columns(1)
+                    ->columnSpanFull(),
 
                 TextEntry::make('created_at')
                     ->label('Created Date')
                     ->hiddenOn('create')
-                    ->state(fn(?Resume $record): string => $record?->created_at?->diffForHumans() ?? '-'),
+                    ->state(fn(?Resume $record): string => $record?->created_at?->diffForHumans() ?? '-')
+                    ->columnSpanFull(),
 
                 TextEntry::make('updated_at')
                     ->label('Last Modified Date')
                     ->hiddenOn('create')
-                    ->state(fn(?Resume $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
+                    ->state(fn(?Resume $record): string => $record?->updated_at?->diffForHumans() ?? '-')
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -80,11 +212,6 @@ class ResumeResource extends Resource
                     RestoreBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public function hasCombinedRelationManagerTabsWithForm(): bool
-    {
-        return true;
     }
 
     public static function getPages(): array
