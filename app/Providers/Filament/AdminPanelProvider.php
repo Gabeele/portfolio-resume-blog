@@ -38,7 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-//            ->userMenu(position: UserMenuPosition::Sidebar)
+            ->profile()
             ->topbar(false)
             ->databaseTransactions()
             ->navigationGroups([
@@ -46,7 +46,6 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-user-circle')
                     ->collapsible(false),
                 NavigationGroup::make('Admin'),
-//                    ->icon(HeroIcon::OutlinedWrenchScrewdriver),
             ])
             ->brandName('Paperclip')
             ->colors([

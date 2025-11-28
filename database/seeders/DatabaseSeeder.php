@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        app(ShieldSeeder::class)->run();
         app(UserSeeder::class)->run();
         app(SkillSeeder::class)->run();
         app(CertificateSeeder::class)->run();
@@ -20,5 +21,7 @@ class DatabaseSeeder extends Seeder
         app(EducationSeeder::class)->run();
         app(ProjectSeeder::class)->run();
         app(ReferenceSeeder::class)->run();
+        app(SummarySeeder::class)->run();
+
     }
 }
