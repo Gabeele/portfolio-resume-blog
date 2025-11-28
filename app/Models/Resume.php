@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Scopes\CurrentUserScope;
+use App\Observers\ResumeObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[ScopedBy(CurrentUserScope::class)]
+#[ObservedBy(ResumeObserver::class)]
 class Resume extends Model
 {
     use HasFactory, SoftDeletes;
@@ -60,6 +63,15 @@ class Resume extends Model
     {
         return $this->belongsToMany(WorkExperience::class, 'resume_work_experience', 'resume_id', 'work_experience_id');
     }
+
+    public function getStoragePath(bool $fullPath = true): string
+    {
+        $user = $this->user;
+        $relativePath = "resumes/$user->id/$this->id.pdf";
+
+        return $fullPath ? storage_path("app/$relativePath") : $relativePath;
+    }
+
 
     protected function casts(): array
     {
