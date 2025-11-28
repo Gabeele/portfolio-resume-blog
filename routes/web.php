@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PreviewPortfolioController;
 use App\Http\Controllers\ResumeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -17,6 +18,10 @@ Route::get('dashboard', function () {
 
 Route::get('pdf/resume/{resume}', ResumeController::class)
     ->name('pdf.resume')
+    ->middleware(['auth', 'verified']);
+
+Route::get('preview/portfolio/{resume}', PreviewPortfolioController::class)
+    ->name('preview.portfolio')
     ->middleware(['auth', 'verified']);
 
 require __DIR__.'/settings.php';

@@ -28,6 +28,8 @@ class SummaryResource extends Resource
                 RichEditor::make('body')
                     ->toolbarButtons(['bold', 'italic', 'link', 'bulletList', 'orderedList', 'redo', 'undo'])
                     ->columnSpanFull()
+                    ->maxLength(500)
+                    ->helperText('Resumes do best with point form!')
                     ->required(),
 
                 TextEntry::make('created_at')

@@ -40,6 +40,6 @@ class EditResume extends EditRecord
 
     protected function getPreviewModalUrl(): ?string
     {
-        return route('home');
+        return route('preview.portfolio', ['resume' => $this->record->id]);
     }
 }

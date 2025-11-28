@@ -28,10 +28,12 @@ class EducationResource extends Resource
             ->components([
                 TextInput::make('school')
                     ->columnSpan(1)
+                    ->maxLength(255)
                     ->required(),
 
                 TextInput::make('certificate')
                     ->columnSpan(1)
+                    ->maxLength(255)
                     ->required(),
 
                 DatePicker::make('start')
@@ -44,6 +46,7 @@ class EducationResource extends Resource
                 RichEditor::make('description')
                     ->toolbarButtons(['bold', 'italic', 'link', 'bulletList', 'orderedList', 'redo', 'undo'])
                     ->columnSpanFull()
+                    ->maxLength(500)
                     ->required(),
 
                 TextEntry::make('created_at')

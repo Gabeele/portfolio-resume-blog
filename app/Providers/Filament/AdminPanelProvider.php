@@ -9,7 +9,6 @@ use Boquizo\FilamentLogViewer\FilamentLogViewerPlugin;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Enums\AuthLayout;
 use DutchCodingCompany\FilamentDeveloperLogins\FilamentDeveloperLoginsPlugin;
-use Filament\Enums\UserMenuPosition;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -39,8 +38,9 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->userMenu(position: UserMenuPosition::Sidebar)
-            ->topbar(false)->databaseTransactions()
+//            ->userMenu(position: UserMenuPosition::Sidebar)
+            ->topbar(false)
+            ->databaseTransactions()
             ->navigationGroups([
                 NavigationGroup::make('Portfolio')
                     ->icon('heroicon-o-user-circle')

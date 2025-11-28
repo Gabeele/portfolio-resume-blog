@@ -27,17 +27,22 @@ class ReferenceResource extends Resource
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->maxLength(255)
                     ->required(),
 
                 TextInput::make('title')
+                    ->maxLength(255)
                     ->required(),
 
                 TextInput::make('company')
+                    ->maxLength(255)
                     ->required(),
 
-                TextInput::make('phone'),
+                TextInput::make('phone')
+                    ->tel(),
 
-                TextInput::make('email'),
+                TextInput::make('email')
+                    ->email(),
 
                 TextEntry::make('created_at')
                     ->label('Created Date')

@@ -28,10 +28,12 @@ class CertificateResource extends Resource
             ->components([
                 TextInput::make('name')
                     ->columnSpanFull()
+                    ->maxLength(300)
                     ->required(),
 
                 RichEditor::make('description')
                     ->toolbarButtons(['bold', 'underline', 'italic', 'link', 'bulletList', 'orderedList', 'redo', 'undo'])
+                    ->maxLength(500)
                     ->columnSpanFull()
                     ->required(),
 
@@ -46,6 +48,7 @@ class CertificateResource extends Resource
                 TextInput::make('url')
                     ->helperText('Provide a link to the certificate if available.')
                     ->url()
+                    ->maxLength(500)
                     ->columnSpanFull(),
 
                 TextEntry::make('created_at')

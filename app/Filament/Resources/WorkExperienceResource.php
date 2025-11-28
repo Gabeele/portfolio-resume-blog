@@ -27,12 +27,12 @@ class WorkExperienceResource extends Resource
         return $schema
             ->components([
                 TextInput::make('business')
-                    ->autocapitalize()
                     ->required()
+                    ->maxLength(255)
                     ->columnSpan(1),
 
                 TextInput::make('location')
-                    ->autocapitalize()
+                    ->maxLength(255)
                     ->datalist([
                         'Remote', 'Toronto, ON', 'Waterloo, ON',
                     ])
@@ -41,12 +41,13 @@ class WorkExperienceResource extends Resource
 
 
                 TextInput::make('role')
-                    ->autocapitalize()
+                    ->maxLength(255)
                     ->columnSpanFull()
                     ->required(),
 
                 RichEditor::make('description')
                     ->toolbarButtons(['bold', 'italic', 'link', 'bulletList', 'orderedList', 'redo', 'undo'])
+                    ->maxLength(500)
                     ->columnSpanFull()
                     ->required(),
 

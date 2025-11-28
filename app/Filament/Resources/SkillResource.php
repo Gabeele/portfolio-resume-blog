@@ -28,6 +28,7 @@ class SkillResource extends Resource
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->unique(modifyRuleUsing: fn($rule) => $rule->where('user_id', auth()->id()))
                     ->required(),
 
                 ToggleButtons::make('proficiency')
@@ -37,6 +38,7 @@ class SkillResource extends Resource
 
                 RichEditor::make('additional_evidence')
                     ->label('Additional Comments')
+                    ->maxLength(500)
                     ->helperText('Provide any additional information or evidence related to this skill.')
                     ->toolbarButtons(['bold', 'underline', 'italic', 'link', 'bulletList', 'orderedList', 'redo', 'undo'])
                     ->columnSpanFull(),

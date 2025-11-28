@@ -38,16 +38,17 @@ class ProjectResource extends Resource
 
                 TextInput::make('role')
                     ->required()
-                    ->maxLength(120),
+                    ->maxLength(255),
 
                 RichEditor::make('description')
                     ->toolbarButtons(['bold', 'italic', 'link', 'bulletList', 'orderedList', 'redo', 'undo'])
                     ->columnSpanFull()
+                    ->maxLength(500)
                     ->required(),
 
                 TextInput::make('url')
                     ->url()
-                    ->maxLength(255),
+                    ->maxLength(300),
 
                 TextInput::make('repo')
                     ->label('Repository Link')

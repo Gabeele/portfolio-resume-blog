@@ -10,6 +10,7 @@ class ResumeController extends Controller
 {
     public function __invoke(Resume $resume)
     {
+        // TODO make this into a service!
         $fullPath = $resume->getStoragePath();
 
         $directory = dirname($fullPath);
@@ -27,6 +28,5 @@ class ResumeController extends Controller
         return response()->file($fullPath, [
             'Content-Disposition' => "inline; filename=\"{$resume->user->name}_Resume.pdf\""
         ]);
-
     }
 }

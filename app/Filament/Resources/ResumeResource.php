@@ -40,21 +40,30 @@ class ResumeResource extends Resource
         return $schema
             ->components([
                 Section::make('Resume')
+                    ->collapsible()
                     ->description('Base information for this resume. Give it a clear name and add tags for grouping.')
                     ->schema([
                         TextInput::make('name')
+                            ->unique(modifyRuleUsing: fn($rule) => $rule->where('user_id', auth()->id()))
                             ->placeholder('e.g. Coffee shop resume')
                             ->required()
+                            ->maxLength(255)
                             ->columnSpanFull(),
 
                         TagsInput::make('tags')
+                            ->splitKeys(['Tab', ' '])
                             ->helperText('Use tags to organize and group resumes (e.g. "barista", "management").')
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->nestedRecursiveRules([
+                                'min:1',
+                                'max:255',
+                            ]),
                     ])
                     ->columns(1)
                     ->columnSpanFull(),
 
                 Section::make('Summaries')
+                    ->collapsible()
                     ->description('Short summary snippets you can include on the resume. Check the ones you want to include.')
                     ->schema([
                         CheckboxList::make('summaries')
@@ -73,6 +82,7 @@ class ResumeResource extends Resource
                     ->columnSpanFull(),
 
                 Section::make('Work Experience')
+                    ->collapsible()
                     ->description('Select the work experiences to include. Each option shows company, role, and date range.')
                     ->schema([
                         CheckboxList::make('work_experiences')
@@ -98,6 +108,7 @@ class ResumeResource extends Resource
                     ->columnSpanFull(),
 
                 Section::make('Education')
+                    ->collapsible()
                     ->description('Choose education entries to include (degree and school). Use search to find entries quickly.')
                     ->schema([
                         Select::make('education')
@@ -122,6 +133,7 @@ class ResumeResource extends Resource
                     ->columns(1)
                     ->columnSpanFull(),
                 Section::make('Projects')
+                    ->collapsible()
                     ->description('Select project entries to include. Use this for featured work or portfolio items.')
                     ->schema([
                         CheckboxList::make('projects')
@@ -137,6 +149,7 @@ class ResumeResource extends Resource
                     ->columns(1)
                     ->columnSpanFull(),
                 Section::make('Skills & Certificates')
+                    ->collapsible()
                     ->description('Group related items: skills on the left and certificates on the right. Both are searchable and preloaded.')
                     ->schema([
                         Select::make('skills')
@@ -158,6 +171,7 @@ class ResumeResource extends Resource
                     ->columns(2)
                     ->columnSpanFull(),
                 Section::make('References')
+                    ->collapsible()
                     ->description('Choose references to show on this resume. Typically a short list of contacts or referees.')
                     ->schema([
                         Select::make('references')
