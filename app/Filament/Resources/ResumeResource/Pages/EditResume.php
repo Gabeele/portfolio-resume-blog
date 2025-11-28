@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ResumeResource\Pages;
 
 use App\Filament\Resources\ResumeResource;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
@@ -23,6 +24,9 @@ class EditResume extends EditRecord
                 ->label('Preview Portfolio'),
             $this->getSaveFormAction()
                 ->formId('form'),
+            Action::make('resume')
+                ->label('Preview Resume')
+                ->url(route('pdf.resume', ['resume' => $this->record->id])),
             DeleteAction::make(),
             ForceDeleteAction::make(),
             RestoreAction::make(),
