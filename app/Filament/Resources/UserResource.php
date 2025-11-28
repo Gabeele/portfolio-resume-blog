@@ -30,7 +30,10 @@ class UserResource extends Resource
     {
         return $schema
             ->components([
-                TextInput::make('name')
+                TextInput::make('first_name')
+                    ->required(),
+
+                TextInput::make('last_name')
                     ->required(),
 
                 Select::make('roles')
