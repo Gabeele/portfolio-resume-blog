@@ -15,4 +15,12 @@ class CreateResume extends CreateRecord
 
         ];
     }
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $user = auth()->user();
+        $data['user_id'] = $user->id;
+        return $data;
+    }
+
 }
