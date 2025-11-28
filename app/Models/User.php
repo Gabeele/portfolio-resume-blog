@@ -3,8 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasName;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -12,7 +14,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements HasAvatar, HasName
+class User extends Authenticatable implements HasAvatar, HasName, FilamentUser
 {
     use HasFactory, Notifiable, TwoFactorAuthenticatable, HasRoles;
     protected $fillable = [
@@ -87,5 +89,10 @@ class User extends Authenticatable implements HasAvatar, HasName
     public function getFilamentName(): string
     {
         return "$this->first_name $this->last_name";
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->hasRole(['super_admin', 'standard']);
     }
 }
