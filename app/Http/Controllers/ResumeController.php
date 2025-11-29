@@ -26,7 +26,7 @@ class ResumeController extends Controller
         }
 
         return response()->file($fullPath, [
-            'Content-Disposition' => "inline; filename=\"{$resume->user->name}_Resume.pdf\""
+            'Content-Disposition' => "inline; filename=\"{$resume->user->first_name}_Resume.pdf\""
         ]);
     }
 }

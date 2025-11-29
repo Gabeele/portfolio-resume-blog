@@ -129,7 +129,7 @@
 </head>
 <body>
 <div class="header">
-    <h1>{{ $resume->user->name }}</h1>
+    <h1>{{ $resume->user->first_name }} {{ $resume->user->last_name }}</h1>
     <p>{{ $resume->user->email }}</p>
 </div>
 

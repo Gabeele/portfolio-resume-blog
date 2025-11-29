@@ -2,13 +2,13 @@
 
 namespace App\Providers\Filament;
 
-use AchyutN\FilamentLogViewer\FilamentLogViewer;
 use App\Filament\Pages\Backups;
+use App\Filament\Pages\Profile;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
-use Boquizo\FilamentLogViewer\FilamentLogViewerPlugin;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Enums\AuthLayout;
 use DutchCodingCompany\FilamentDeveloperLogins\FilamentDeveloperLoginsPlugin;
+use Filament\Actions\Action;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -38,9 +38,11 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->profile()
             ->topbar(false)
             ->databaseTransactions()
+            ->userMenuItems([
+                'profile' => fn(Action $action) => $action->label('Edit profile')->url(Profile::getUrl()),
+            ])
             ->navigationGroups([
                 NavigationGroup::make('Portfolio')
                     ->icon('heroicon-o-user-circle')
