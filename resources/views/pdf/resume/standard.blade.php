@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $resume->name }} - Resume</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ $resume->user->first_name }} {{ $resume->user->last_name }} - Resume</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Arial', sans-serif;
             line-height: 1.6;
@@ -20,21 +19,56 @@
             margin: 0 auto;
         }
 
+        /* Header layout: avatar on the left, contact on the right */
         .header {
-            text-align: center;
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 20px;
+            align-items: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 2px solid #333;
         }
 
-        .header h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f0f0;
+            font-size: 36px;
+            color: #555;
         }
 
-        .header p {
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .header-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .header-info h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .contact {
             font-size: 14px;
             color: #666;
+        }
+
+        .contact .line {
+            margin-bottom: 4px;
         }
 
         .section {
@@ -47,10 +81,6 @@
             margin-bottom: 15px;
             padding-bottom: 5px;
             border-bottom: 1px solid #ddd;
-        }
-
-        .summary {
-            margin-bottom: 20px;
         }
 
         .summary p {
@@ -70,16 +100,13 @@
             margin-bottom: 5px;
         }
 
-        .work-experience-item .meta,
-        .education-item .meta {
+        .meta {
             font-size: 14px;
             color: #666;
             margin-bottom: 8px;
         }
 
-        .work-experience-item .description,
-        .education-item .description,
-        .project-item .description {
+        .description {
             font-size: 14px;
             margin-top: 8px;
         }
@@ -97,19 +124,8 @@
             font-size: 14px;
         }
 
-        .certificates-list,
-        .references-list {
+        .certificates-list, .references-list {
             list-style: none;
-        }
-
-        .certificates-list li,
-        .references-list li {
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-
-        .references-list li {
-            line-height: 1.8;
         }
 
         .tags {
@@ -118,21 +134,66 @@
             color: #666;
         }
 
-        .tags span {
-            display: inline-block;
-            margin-right: 8px;
-            padding: 2px 8px;
-            background-color: #e8e8e8;
-            border-radius: 3px;
+        @media (max-width: 600px) {
+            .header {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .header-info {
+                align-items: center;
+            }
         }
     </style>
 </head>
 <body>
 <div class="header">
-    <h1>{{ $resume->user->first_name }} {{ $resume->user->last_name }}</h1>
-    <p>{{ $resume->user->email }}</p>
+    {{-- Avatar column --}}
+    @if($resume->user->avatar_url)
+        <div class="avatar">
+            <img src="{{ $resume->user->avatar_url }}"
+                 alt="{{ $resume->user->first_name }} {{ $resume->user->last_name }}'s avatar">
+        </div>
+    @endif
+
+    {{-- Contact / name column --}}
+    <div class="header-info">
+        <h1>{{ $resume->user->first_name }} {{ $resume->user->last_name }}</h1>
+
+        <div class="contact">
+            @if($resume->user->email)
+                <div class="line">Email: <a href="mailto:{{ $resume->user->email }}">{{ $resume->user->email }}</a>
+                </div>
+            @endif
+
+            @if($resume->user->phone)
+                <div class="line">Phone: {{ $resume->user->phone }}</div>
+            @endif
+
+            {{-- Full address line composed only when values exist --}}
+            @php
+                $addressParts = array_filter([
+                    $resume->user->street ?: null,
+                    $resume->user->city ?: null,
+                    $resume->user->region ?: null,
+                    $resume->user->mailing_code ?: null,
+                    $resume->user->country ?: null,
+                ]);
+            @endphp
+
+            @if(!empty($addressParts))
+                <div class="line">Address: {{ implode(', ', $addressParts) }}</div>
+            @endif
+
+            {{-- Helpful small tag for country-specific notes, e.g. UK --}}
+            @if(strtolower($resume->user->country ?? '') === 'uk' || strtolower($resume->user->country ?? '') === 'united kingdom' || strtolower($resume->user->country ?? '') === 'gb')
+                <div class="line">Note: UK address shown — ensure mailing code (postcode) format is correct.</div>
+            @endif
+        </div>
+    </div>
 </div>
 
+{{-- Summary --}}
 @if($resume->summaries->isNotEmpty())
     <div class="section summary">
         <h2 class="section-title">Summary</h2>
@@ -142,6 +203,7 @@
     </div>
 @endif
 
+{{-- Work --}}
 @if($resume->workExperiences->isNotEmpty())
     <div class="section">
         <h2 class="section-title">Work Experience</h2>
@@ -163,6 +225,7 @@
     </div>
 @endif
 
+{{-- Education --}}
 @if($resume->education->isNotEmpty())
     <div class="section">
         <h2 class="section-title">Education</h2>
@@ -180,6 +243,7 @@
     </div>
 @endif
 
+{{-- Skills --}}
 @if($resume->skills->isNotEmpty())
     <div class="section">
         <h2 class="section-title">Skills</h2>
@@ -196,6 +260,7 @@
     </div>
 @endif
 
+{{-- Projects --}}
 @if($resume->projects->isNotEmpty())
     <div class="section">
         <h2 class="section-title">Projects</h2>
@@ -214,9 +279,9 @@
                             <a href="{{ $project->url }}">{{ $project->url }}</a>
                         @endif
                         @if($project->repo)
-                            @if($project->url)
-                                |
-                            @endif
+                                @if($project->url)
+                                    |
+                                @endif
                             <a href="{{ $project->repo }}">Repository</a>
                         @endif
                     </div>
@@ -226,6 +291,7 @@
     </div>
 @endif
 
+{{-- Certifications --}}
 @if($resume->certificates->isNotEmpty())
     <div class="section">
         <h2 class="section-title">Certifications</h2>
@@ -242,6 +308,7 @@
     </div>
 @endif
 
+{{-- References --}}
 @if($resume->references->isNotEmpty())
     <div class="section">
         <h2 class="section-title">References</h2>
@@ -264,14 +331,6 @@
                 </li>
             @endforeach
         </ul>
-    </div>
-@endif
-
-@if($resume->tags && count($resume->tags) > 0)
-    <div class="tags">
-        @foreach($resume->tags as $tag)
-            <span>{{ $tag }}</span>
-        @endforeach
     </div>
 @endif
 </body>

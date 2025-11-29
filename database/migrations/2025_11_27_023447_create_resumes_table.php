@@ -12,6 +12,8 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('name');
             $table->string('tags')->nullable();
+            $table->boolean('show_avatar')->default(false);
+            $table->string('template');
             $table->timestamps();
             $table->softDeletes();
         });

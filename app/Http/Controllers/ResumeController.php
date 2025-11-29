@@ -12,6 +12,7 @@ class ResumeController extends Controller
     {
         // TODO make this into a service!
         $fullPath = $resume->getStoragePath();
+        $template = $resume->template->value;
 
         $directory = dirname($fullPath);
         if (!File::exists($directory)) {
@@ -21,7 +22,7 @@ class ResumeController extends Controller
         if (!File::exists($fullPath)) {
             $resume->load('certificates', 'education', 'workExperiences', 'skills', 'references', 'summaries', 'projects');
 
-            Pdf::loadView('pdf.resume.standard', ['resume' => $resume])
+            Pdf::loadView("pdf.resume.$template", ['resume' => $resume])
                 ->save($fullPath);
         }
 

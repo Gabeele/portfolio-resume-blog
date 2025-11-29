@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\ResumeTemplate;
 use App\Filament\Resources\ResumeResource\Pages;
 use App\Filament\Resources\ResumeResource\RelationManagers\WorkExpereincesRelationManager;
 use App\Filament\Resources\ResumeResource\RelationManagers\WorkExperiencesRelationManager;
@@ -13,11 +14,14 @@ use Filament\Actions\EditAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
@@ -58,6 +62,22 @@ class ResumeResource extends Resource
                                 'min:1',
                                 'max:255',
                             ]),
+                        Group::make()
+                            ->columns(2)
+                            ->schema([
+                                Radio::make('show_avatar')
+                                    ->label('Display Avatar')
+                                    ->default(false)
+                                    ->inline()
+                                    ->boolean(),
+
+                                ToggleButtons::make('template')
+                                    ->label('Template')
+                                    ->options(ResumeTemplate::getLabels())
+                                    ->default(ResumeTemplate::Standard->value)
+                                    ->inline()
+                                    ->columnSpanFull(),
+                            ])
                     ])
                     ->columns(1)
                     ->columnSpanFull(),

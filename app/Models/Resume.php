@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ResumeTemplate;
 use App\Models\Scopes\CurrentUserScope;
 use App\Observers\ResumeObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -22,6 +23,14 @@ class Resume extends Model
         'user_id',
         'name',
         'tags',
+        'show_avatar',
+        'template'
+    ];
+
+    protected $casts = [
+        'tags' => 'array',
+        'show_avatar' => 'boolean',
+        'template' => ResumeTemplate::class
     ];
 
     public function user(): BelongsTo
