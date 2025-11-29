@@ -45,6 +45,16 @@ class UserResource extends Resource
                 TextInput::make('email')
                     ->required(),
 
+                TextInput::make('phone')
+                    ->tel(),
+
+                TextInput::make('street'),
+                TextInput::make('city'),
+                TextInput::make('region'),
+                TextInput::make('mailing_code'),
+                TextInput::make('country'),
+
+
                 DatePicker::make('email_verified_at')
                     ->disabled()
                     ->label('Email Verified Date'),
@@ -74,27 +84,25 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
-                    ->searchable()
-                    ->sortable(),
+                TextColumn::make('first_name')
+                    ->searchable(),
+
+                TextColumn::make('last_name')
+                    ->searchable(),
 
                 TextColumn::make('email')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
 
                 TextColumn::make('roles.name'),
 
-                TextColumn::make('email_verified_at')
-                    ->label('Email Verified Date')
+                TextColumn::make('created_at')
+                    ->label('Created Date')
                     ->date(),
 
-                TextColumn::make('two_factor_secret'),
-
-                TextColumn::make('two_factor_recovery_codes'),
-
-                TextColumn::make('two_factor_confirmed_at')
-                    ->label('Two Factor Confirmed Date')
+                TextColumn::make('last_login_at')
+                    ->label('Last Login Date')
                     ->date(),
+
             ])
             ->filters([
                 //

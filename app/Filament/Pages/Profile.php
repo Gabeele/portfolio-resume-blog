@@ -2,16 +2,23 @@
 
 namespace App\Filament\Pages;
 
+use App\Rules\MailingCodeRule;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class Profile extends Page implements HasForms
 {
@@ -22,8 +29,9 @@ class Profile extends Page implements HasForms
     protected static ?string $slug = 'profile';
     protected static ?string $navigationLabel = 'Profile';
     protected static bool $shouldRegisterNavigation = false;
-    public ?array $data = [];
     protected string $view = 'filament.pages.profile';
+
+    public ?array $data = [];
 
     public function form(Schema $schema): Schema
     {
@@ -32,45 +40,86 @@ class Profile extends Page implements HasForms
                 Section::make('Personal Information')
                     ->description('Update your personal information and profile picture.')
                     ->schema([
-                        TextInput::make('first_name')
-                            ->label('First Name')
-                            ->required()
+
+                        Grid::make(5)
+                            ->schema([
+                                FileUpload::make('avatar_url')
+                                    ->label('Profile Picture')
+                                    ->avatar()
+                                    ->image()
+                                    ->imageEditor()
+                                    ->circleCropper()
+                                    ->directory('avatars')
+                                    ->visibility('public')
+                                    ->maxSize(2048)
+                                    ->helperText('Upload a profile picture (max 2MB).')
+                                    ->columnSpan(1),
+
+                                Group::make()
+                                    ->schema([
+                                        TextInput::make('first_name')
+                                            ->label('First Name')
+                                            ->required()
+                                            ->maxLength(255),
+
+                                        TextInput::make('last_name')
+                                            ->label('Last Name')
+                                            ->required()
+                                            ->maxLength(255),
+
+                                        TextInput::make('email')
+                                            ->label('Email Address')
+                                            ->email()
+                                            ->required()
+                                            ->rules([
+                                                Rule::unique('users', 'email')->ignore(Auth::id()),
+                                            ])
+                                            ->maxLength(255),
+
+                                        TextInput::make('phone')
+                                            ->tel()
+                                            ->maxLength(50),
+                                    ])
+                                    ->columnSpan(4),
+                            ]),
+                    ]),
+
+                Section::make('Address')
+                    ->description('Address information will be displayed publicly. Leave blank to hide.')
+                    ->columns(2)
+                    ->schema([
+
+
+                        TextInput::make('street')
                             ->maxLength(255),
 
-                        TextInput::make('last_name')
-                            ->label('Last Name')
-                            ->required()
+                        TextInput::make('city')
                             ->maxLength(255),
 
-                        TextInput::make('email')
-                            ->label('Email Address')
-                            ->email()
-                            ->required()
-                            ->rules([
-                                'unique:users,email,' . Auth::id(),
-                            ])
-                            ->maxLength(255)
-                            ->helperText('If you change your email, you will need to verify it again.'),
+                        TextInput::make('region')
+                            ->label('Province / State')
+                            ->reactive()
+                            ->maxLength(255),
 
-                        FileUpload::make('avatar_url')
-                            ->label('Profile Picture')
-                            ->image()
-                            ->imageEditor()
-                            ->imageEditorAspectRatios([
-                                null,
-                                '16:9',
-                                '4:3',
-                                '1:1',
+                        TextInput::make('mailing_code')
+                            ->label('Postal / ZIP Code')
+                            ->rules([new MailingCodeRule()])
+                            ->maxLength(20),
+
+                        Select::make('country')
+                            ->native(false)
+                            ->options([
+                                'Canada' => 'Canada',
+                                'United States' => 'United States',
+                                'United Kingdom' => 'United Kingdom',
                             ])
-                            ->directory('avatars')
-                            ->visibility('public')
-                            ->maxSize(2048)
-                            ->helperText('Upload a profile picture (max 2MB).'),
-                    ])
-                    ->columns(2),
+                            ->default('Canada'),
+                    ]),
 
                 Section::make('Change Password')
                     ->description('Leave blank to keep your current password.')
+                    ->columns(2)
+                    ->collapsible()
                     ->schema([
                         TextInput::make('current_password')
                             ->label('Current Password')
@@ -91,34 +140,48 @@ class Profile extends Page implements HasForms
                             ->password()
                             ->revealable()
                             ->requiredWith('password'),
-                    ])
-                    ->columns(2)
-                    ->collapsible(),
+                    ]),
             ])
             ->statePath('data')
             ->model(Auth::user());
+    }
+
+    public function mount(): void
+    {
+        $user = Auth::user();
+
+        $this->form->fill([
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'street' => $user->street,
+            'city' => $user->city,
+            'region' => $user->region,
+            'mailing_code' => $user->mailing_code,
+            'country' => $user->country ?? 'Canada',
+            'avatar_url' => $user->avatar_url,
+        ]);
     }
 
     public function save(): void
     {
         $data = $this->form->getState();
 
+        /** @var Authenticatable $user */
         $user = Auth::user();
 
         if (!empty($data['password'])) {
-            if (!empty($data['current_password'])) {
-                if (!Auth::guard()->validate([
-                    'email' => $user->email,
-                    'password' => $data['current_password'],
-                ])) {
-                    Notification::make()
-                        ->title('Current password is incorrect')
-                        ->danger()
-                        ->send();
+            if (empty($data['current_password']) || !Hash::check($data['current_password'], $user->password)) {
+                Notification::make()
+                    ->title('Current password is incorrect or missing')
+                    ->danger()
+                    ->send();
 
-                    return;
-                }
+                return;
             }
+
+            $data['password'] = Hash::make($data['password']);
         } else {
             unset($data['password']);
         }
@@ -129,24 +192,25 @@ class Profile extends Page implements HasForms
             $data['email_verified_at'] = null;
         }
 
-        $user->update($data);
+        try {
+            $user->update($data);
 
-        Notification::make()
-            ->title('Profile updated successfully')
-            ->success()
-            ->send();
+            if (isset($data['email']) && $data['email'] !== $user->email && method_exists($user, 'sendEmailVerificationNotification')) {
+                $user->sendEmailVerificationNotification();
+            }
 
-        $this->mount();
-    }
+            Notification::make()
+                ->title('Profile updated successfully')
+                ->success()
+                ->send();
 
-    public function mount(): void
-    {
-        $user = Auth::user();
-        $this->form->fill([
-            'first_name' => $user->first_name,
-            'last_name' => $user->last_name,
-            'email' => $user->email,
-            'avatar_url' => $user->avatar_url,
-        ]);
+            $this->mount();
+        } catch (\Exception $e) {
+            Notification::make()
+                ->title('Unable to update profile')
+                ->body($e->getMessage())
+                ->danger()
+                ->send();
+        }
     }
 }
