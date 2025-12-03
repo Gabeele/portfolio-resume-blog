@@ -104,4 +104,9 @@ class User extends Authenticatable implements HasAvatar, HasName, FilamentUser
     {
         return $this->hasRole(['super_admin', 'Standard']);
     }
+
+    public function tags(): HasMany
+    {
+        return $this->hasMany(Tag::class);
+    }
 }

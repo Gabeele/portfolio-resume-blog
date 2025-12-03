@@ -47,6 +47,8 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make('Portfolio')
                     ->icon('heroicon-o-user-circle')
                     ->collapsible(false),
+                NavigationGroup::make('Blog')
+                    ->icon('heroicon-o-document-text'),
                 NavigationGroup::make('Admin'),
             ])
             ->brandName('Paperclip')
