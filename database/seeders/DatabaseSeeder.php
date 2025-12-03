@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
         app(ProjectSeeder::class)->run();
         app(ReferenceSeeder::class)->run();
         app(SummarySeeder::class)->run();
+        app(TagSeeder::class)->run();
+        app(ReachoutSeeder::class)->run();
 
     }
 }
