@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Actions\EmailAction;
 use App\Filament\Resources\ReachoutResource\Pages;
 use App\Models\Reachout;
 use BackedEnum;
@@ -28,7 +29,7 @@ class ReachoutResource extends Resource
 
     protected static ?string $slug = 'reachouts';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::ChatBubbleLeft;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleBottomCenter;
 
     public static function getNavigationBadge(): ?string
     {
@@ -113,6 +114,8 @@ class ReachoutResource extends Resource
                 TrashedFilter::make(),
             ])
             ->recordActions([
+                EmailAction::make()
+                    ->label('Reply'),
                 ViewAction::make()
                     ->label(''),
                 DeleteAction::make()

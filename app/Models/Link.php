@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Filament\Support\Icons\Heroicon;
+use App\Enums\Icon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,7 +32,7 @@ class Link extends Model
         return [
             'is_active' => 'boolean',
             'order' => 'integer',
-            'icon' => Heroicon::class,
+            'icon' => Icon::class,
         ];
     }
 }
