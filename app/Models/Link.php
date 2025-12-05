@@ -24,7 +24,7 @@ class Link extends Model
 
     public function atlas(): BelongsTo
     {
-        return $this->belongsTo(atlas::class);
+        return $this->belongsTo(Atlas::class);
     }
 
     protected function casts(): array

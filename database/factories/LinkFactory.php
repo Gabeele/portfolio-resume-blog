@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\atlas;
+use App\Models\Atlas;
 use App\Models\Link;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
