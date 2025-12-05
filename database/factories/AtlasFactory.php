@@ -2,14 +2,14 @@
 
 namespace Database\Factories;
 
-use App\Models\atlas;
+use App\Models\Atlas;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class atlasFactory extends Factory
+class AtlasFactory extends Factory
 {
-    protected $model = atlas::class;
+    protected $model = Atlas::class;
 
     public function definition(): array
     {

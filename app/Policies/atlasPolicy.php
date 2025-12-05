@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\atlas;
+use App\Models\Atlas;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class atlasPolicy
+class AtlasPolicy
 {
     use HandlesAuthorization;
 
@@ -15,7 +15,7 @@ class atlasPolicy
 
     }
 
-    public function view(User $user, atlas $atlas): bool
+    public function view(User $user, Atlas $Atlas): bool
     {
     }
 
@@ -23,19 +23,19 @@ class atlasPolicy
     {
     }
 
-    public function update(User $user, atlas $atlas): bool
+    public function update(User $user, Atlas $Atlas): bool
     {
     }
 
-    public function delete(User $user, atlas $atlas): bool
+    public function delete(User $user, Atlas $Atlas): bool
     {
     }
 
-    public function restore(User $user, atlas $atlas): bool
+    public function restore(User $user, Atlas $Atlas): bool
     {
     }
 
-    public function forceDelete(User $user, atlas $atlas): bool
+    public function forceDelete(User $user, Atlas $Atlas): bool
     {
     }
 }
