@@ -6,7 +6,7 @@ use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 use Illuminate\Contracts\Support\Htmlable;
 
-enum PortfolioTemplate: string implements HasColor, Haslabel
+enum PortfolioTemplate: string implements HasColor, HasLabel
 {
 
     case Standard = 'standard';

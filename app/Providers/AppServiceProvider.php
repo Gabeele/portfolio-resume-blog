@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,6 +23,10 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::preventLazyLoading();
         Model::preventAccessingMissingAttributes();
+
+        Route::bind('slug', function (string $value) {
+            return User::where('slug', $value)->firstOrFail();
+        });
 
         FilamentColor::register([
             'red' => Color::Red,

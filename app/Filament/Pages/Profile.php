@@ -2,10 +2,13 @@
 
 namespace App\Filament\Pages;
 
+use App\Enums\PortfolioTemplate;
 use App\Rules\MailingCodeRule;
+use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
@@ -13,6 +16,7 @@ use Filament\Pages\Page;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -37,10 +41,36 @@ class Profile extends Page implements HasForms
     {
         return $schema
             ->schema([
+                Section::make('Your URL')
+                    ->description('This is the unique identifier for your resume. It will be used in the URL.')
+                    ->schema([
+
+                        TextInput::make('slug')
+                            ->label('Your Slug')
+                            ->required()
+                            ->prefix(config('app.url') . '/')
+                            ->unique(
+                                table: 'users',
+                                column: 'slug',
+                                ignoreRecord: true,
+                            )
+                            ->suffixAction(
+                                Action::make('visit')
+                                    ->icon('heroicon-m-arrow-top-right-on-square')
+                                    ->url(fn(Get $get) => config('app.url') . '/' . $get('slug'), shouldOpenInNewTab: true)
+                                    ->visible(fn(Get $get) => filled($get('slug')))
+                            )
+                            ->columnSpanFull(),
+
+                        ToggleButtons::make('template')
+                            ->label('Template')
+                            ->options(PortfolioTemplate::getLabels()) // ['standard' => 'Standard']
+                            ->required(),
+
+                    ]),
                 Section::make('Personal Information')
                     ->description('Update your personal information and profile picture.')
                     ->schema([
-
                         Grid::make(5)
                             ->schema([
                                 FileUpload::make('avatar_url')
@@ -161,6 +191,8 @@ class Profile extends Page implements HasForms
             'mailing_code' => $user->mailing_code,
             'country' => $user->country ?? 'Canada',
             'avatar_url' => $user->avatar_url,
+            'slug' => $user->slug,
+            'template' => $user->template,
         ]);
     }
 
@@ -194,6 +226,10 @@ class Profile extends Page implements HasForms
 
         try {
             $user->update($data);
+
+            if (!empty($this->data['slug'])) {
+                $user->update(['slug' => $this->data['slug']]);
+            }
 
             if (isset($data['email']) && $data['email'] !== $user->email && method_exists($user, 'sendEmailVerificationNotification')) {
                 $user->sendEmailVerificationNotification();

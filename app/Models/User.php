@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\PortfolioTemplate;
 use App\Observers\UserObserver;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
@@ -33,6 +34,8 @@ class User extends Authenticatable implements HasAvatar, HasName, FilamentUser
         'region',
         'mailing_code',
         'country',
+        'slug',
+        'template'
     ];
 
     /**
@@ -52,6 +55,11 @@ class User extends Authenticatable implements HasAvatar, HasName, FilamentUser
         return true;
     }
 
+    public function siteUrl()
+    {
+        return config('app.url') . "/$this->slug->slug";
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -63,6 +71,7 @@ class User extends Authenticatable implements HasAvatar, HasName, FilamentUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
+            'template' => PortfolioTemplate::class,
         ];
     }
 

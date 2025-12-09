@@ -34,6 +34,7 @@ class UserFactory extends Factory
             'region' => fake()->word(),
             'mailing_code' => fake()->postcode(),
             'country' => fake()->countryCode(),
+            'slug' => fake()->slug(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
             'two_factor_secret' => Str::random(10),

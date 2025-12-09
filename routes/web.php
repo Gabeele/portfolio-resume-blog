@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PreviewPortfolioController;
 use App\Http\Controllers\ResumeController;
+use App\Http\Controllers\SlugController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -23,5 +24,7 @@ Route::get('pdf/resume/{resume}', ResumeController::class)
 Route::get('preview/portfolio/{resume}', PreviewPortfolioController::class)
     ->name('preview.portfolio')
     ->middleware(['auth', 'verified']);
+
+Route::get('{slug}', [SlugController::class, 'show'])->name('show.portfolio');
 
 require __DIR__.'/settings.php';
