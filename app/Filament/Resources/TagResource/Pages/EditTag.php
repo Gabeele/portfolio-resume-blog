@@ -21,3 +21,4 @@ class EditTag extends EditRecord
         ];
     }
 }
+

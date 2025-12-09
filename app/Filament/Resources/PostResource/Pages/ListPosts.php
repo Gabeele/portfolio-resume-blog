@@ -17,3 +17,4 @@ class ListPosts extends ListRecords
         ];
     }
 }
+

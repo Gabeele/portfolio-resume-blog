@@ -18,12 +18,14 @@ use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -70,6 +72,12 @@ class ResumeResource extends Resource
                                     ->default(false)
                                     ->inline()
                                     ->boolean(),
+
+                                Toggle::make('is_public')
+                                    ->label('Visible on Portfolio')
+                                    ->default(false)
+                                    ->helperText('If enabled, this resume appears on your public portfolio.')
+                                    ->columnSpanFull(),
 
                                 ToggleButtons::make('template')
                                     ->label('Template')
@@ -229,6 +237,11 @@ class ResumeResource extends Resource
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
+
+                IconColumn::make('is_public')
+                    ->label('Portfolio')
+                    ->boolean()
+                    ->alignCenter(),
 
                 TextColumn::make('tags'),
             ])

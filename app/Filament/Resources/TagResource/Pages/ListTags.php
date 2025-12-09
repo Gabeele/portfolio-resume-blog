@@ -17,3 +17,4 @@ class ListTags extends ListRecords
         ];
     }
 }
+

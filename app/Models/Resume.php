@@ -7,6 +7,7 @@ use App\Models\Scopes\CurrentUserScope;
 use App\Observers\ResumeObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,14 +24,9 @@ class Resume extends Model
         'user_id',
         'name',
         'tags',
+        'is_public',
         'show_avatar',
         'template'
-    ];
-
-    protected $casts = [
-        'tags' => 'array',
-        'show_avatar' => 'boolean',
-        'template' => ResumeTemplate::class
     ];
 
     public function user(): BelongsTo
@@ -73,6 +69,11 @@ class Resume extends Model
         return $this->belongsToMany(WorkExperience::class, 'resume_work_experience', 'resume_id', 'work_experience_id');
     }
 
+    public function scopeVisibleOnPortfolio(Builder $builder): Builder
+    {
+        return $builder->where('is_public', true);
+    }
+
     public function getStoragePath(bool $fullPath = true): string
     {
         $user = $this->user;
@@ -85,7 +86,10 @@ class Resume extends Model
     protected function casts(): array
     {
         return [
-            'tags' => 'array'
+            'tags' => 'array',
+            'is_public' => 'boolean',
+            'show_avatar' => 'boolean',
+            'template' => ResumeTemplate::class
         ];
     }
 }

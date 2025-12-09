@@ -17,7 +17,8 @@ class ResumeFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'tags' => $this->faker->word(),
-            'template' => $this->faker->randomElement(ResumeTemplate::class),
+            'is_public' => false,
+            'template' => $this->faker->randomElement(ResumeTemplate::cases()),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
 

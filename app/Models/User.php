@@ -57,7 +57,7 @@ class User extends Authenticatable implements HasAvatar, HasName, FilamentUser
 
     public function siteUrl()
     {
-        return config('app.url') . "/$this->slug->slug";
+        return config('app.url') . "/$this->slug";
     }
 
     /**
@@ -78,6 +78,11 @@ class User extends Authenticatable implements HasAvatar, HasName, FilamentUser
     public function skills(): HasMany
     {
         return $this->hasMany(Skill::class);
+    }
+
+    public function resumes(): HasMany
+    {
+        return $this->hasMany(Resume::class);
     }
 
     public function hasSkill(Skill $skill): bool

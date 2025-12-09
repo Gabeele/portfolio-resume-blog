@@ -23,3 +23,4 @@ class CreateTag extends CreateRecord
         return $data;
     }
 }
+
