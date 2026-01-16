@@ -11,9 +11,6 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\Layout\Grid;
-use Filament\Tables\Columns\Layout\Split;
-use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -79,56 +76,46 @@ class ProjectResource extends Resource
     {
         return $table
             ->columns([
-                Grid::make()
-                    ->schema([
-                        Split::make([
-                            ImageColumn::make('image')
-                                ->label('')
-                                ->imageHeight('80')
-                                ->imageWidth('80'),
-                            Stack::make([
-                                TextColumn::make('title')
-                                    ->label('Title')
-                                    ->weight('bold')
-                                    ->limit(60),
+                ImageColumn::make('image')
+                    ->label('Image')
+                    ->size(60),
 
-                                TextColumn::make('role')
-                                    ->label('Role')
-                                    ->extraAttributes(['class' => 'text-sm text-gray-500']),
+                TextColumn::make('title')
+                    ->label('Title')
+                    ->weight('bold')
+                    ->searchable()
+                    ->sortable()
+                    ->limit(40),
 
-                                TextColumn::make('description')
-                                    ->label('Description')
-                                    ->html()
-                                    ->limit(50)
-                                    ->wrap(),
+                TextColumn::make('role')
+                    ->label('Role')
+                    ->searchable()
+                    ->limit(30),
 
-                                Grid::make()
-                                    ->columns(2)
-                                    ->schema([
-                                        TextColumn::make('url')
-                                            ->label('Live')
-                                            ->formatStateUsing(fn($state, $record) => $state ? 'Project' : null)
-                                            ->url(fn($record) => $record->url)
-                                            ->openUrlInNewTab(),
+                TextColumn::make('description')
+                    ->label('Description')
+                    ->html()
+                    ->limit(50)
+                    ->wrap(),
 
-                                        TextColumn::make('repo')
-                                            ->label('Repo')
-                                            ->formatStateUsing(fn($state, $record) => $state ? 'Repo' : null)
-                                            ->url(fn($record) => $record->repo)
-                                            ->openUrlInNewTab(),
-                                    ]),
-                            ])->grow(),
-                        ]),
-                    ])
-                    ->columns(1),
-            ])
-            ->contentGrid([
-                'md' => 1,
-                'xl' => 2,
+                TextColumn::make('url')
+                    ->label('Live')
+                    ->formatStateUsing(fn($state) => $state ? 'View' : '-')
+                    ->url(fn($record) => $record->url)
+                    ->openUrlInNewTab()
+                    ->alignCenter(),
+
+                TextColumn::make('repo')
+                    ->label('Repository')
+                    ->formatStateUsing(fn($state) => $state ? 'View' : '-')
+                    ->url(fn($record) => $record->repo)
+                    ->openUrlInNewTab()
+                    ->alignCenter(),
             ])
             ->defaultSort('created_at', 'desc')
             ->paginated(function (Table $table) {
                 $count = $table->getQuery()->count();
+
                 return $count >= 15 ? [10, 25, 50] : false;
             });
     }

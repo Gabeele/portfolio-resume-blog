@@ -52,11 +52,13 @@ class SummaryResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('body')
+                    ->wrap()
                     ->html()
-                    ->limit(50),
+                    ->limit(25),
             ])
             ->paginated(function (Table $table) {
                 $count = $table->getQuery()->count();
+
                 return $count >= 15 ? [10, 25, 50] : false;
             });
     }

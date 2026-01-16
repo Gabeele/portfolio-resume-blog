@@ -11,6 +11,7 @@ use Filament\Models\Contracts\HasName;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -37,6 +38,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
         'country',
         'slug',
         'template',
+        'public_resume_id',
     ];
 
     /**
@@ -84,6 +86,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
     public function resumes(): HasMany
     {
         return $this->hasMany(Resume::class);
+    }
+
+    public function publicResume(): BelongsTo
+    {
+        return $this->belongsTo(Resume::class, 'public_resume_id');
     }
 
     public function hasSkill(Skill $skill): bool

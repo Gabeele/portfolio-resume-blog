@@ -9,8 +9,7 @@ use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\RestoreAction;
+use Filament\Actions\ReplicateAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Radio;
@@ -23,9 +22,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -34,8 +31,11 @@ use Illuminate\Support\Str;
 class ResumeResource extends Resource
 {
     protected static ?string $model = Resume::class;
+
     protected static ?string $slug = 'resumes';
+
     protected static ?int $navigationSort = 2;
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
     public static function form(Schema $schema): Schema
@@ -76,7 +76,7 @@ class ResumeResource extends Resource
                                     ->default(ResumeTemplate::Standard->value)
                                     ->inline()
                                     ->columnSpanFull(),
-                            ])
+                            ]),
                     ])
                     ->columns(1)
                     ->columnSpanFull(),
@@ -226,30 +226,55 @@ class ResumeResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label('Resume Name')
                     ->searchable()
+                    ->sortable()
+                    ->limit(40)
+                    ->weight('bold'),
+
+                TextColumn::make('template')
+                    ->label('Template')
+                    ->searchable()
+                    ->badge()
                     ->sortable(),
 
-                IconColumn::make('is_public')
-                    ->label('Portfolio')
-                    ->boolean()
-                    ->alignCenter(),
+                TextColumn::make('tags')
+                    ->label('Tags')
+                    ->searchable()
+                    ->badge()
+                    ->separator(',')
+                    ->limit(30),
 
-                TextColumn::make('tags'),
+                TextColumn::make('created_at')
+                    ->label('Created')
+                    ->dateTime()
+                    ->sortable()
+                    ->since(),
             ])
-            ->filters([
-                TrashedFilter::make(),
-            ])
+            ->defaultSort('created_at', 'desc')
             ->recordActions([
-                EditAction::make(),
+                ReplicateAction::make()
+                    ->label('Duplicate')
+                    ->icon('heroicon-o-document-duplicate')
+                    ->excludeAttributes(['is_public'])
+                    ->mutateRecordDataUsing(function (array $data): array {
+                        $data['name'] = $data['name'] . ' (Copy)';
+
+                        return $data;
+                    })
+                    ->successNotificationTitle('Resume duplicated successfully'),
                 DeleteAction::make(),
-                RestoreAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                     RestoreBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->paginated(function (Table $table) {
+                $count = $table->getQuery()->count();
+                return $count >= 15 ? [10, 25, 50] : false;
+            });
     }
 
     public static function getPages(): array

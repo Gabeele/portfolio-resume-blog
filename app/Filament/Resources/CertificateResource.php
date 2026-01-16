@@ -10,7 +10,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,9 +18,13 @@ use UnitEnum;
 class CertificateResource extends Resource
 {
     protected static ?string $model = Certificate::class;
+
     protected static ?string $slug = 'certificates';
+
     protected static string|UnitEnum|null $navigationGroup = 'Repository';
+
     protected static ?int $navigationSort = 6;
+
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -67,19 +70,41 @@ class CertificateResource extends Resource
     {
         return $table
             ->columns([
-                Stack::make([
-                    TextColumn::make('name'),
-                    TextColumn::make('created_at')
-                        ->label('Created')
-                        ->dateTime(),
-                ]),
+                TextColumn::make('name')
+                    ->label('Certificate Name')
+                    ->searchable()
+                    ->sortable()
+                    ->limit(50),
+
+                TextColumn::make('description')
+                    ->label('Description')
+                    ->html()
+                    ->limit(50)
+                    ->wrap(),
+
+                TextColumn::make('file')
+                    ->label('File')
+                    ->formatStateUsing(fn($state) => $state ? 'Download' : '-')
+                    ->url(fn($record) => $record->file ? asset('storage/' . $record->file) : null)
+                    ->openUrlInNewTab()
+                    ->alignCenter(),
+
+                TextColumn::make('url')
+                    ->label('Certificate URL')
+                    ->formatStateUsing(fn($state) => $state ? 'View' : '-')
+                    ->url(fn($record) => $record->url)
+                    ->openUrlInNewTab()
+                    ->alignCenter(),
+
+                TextColumn::make('created_at')
+                    ->label('Created')
+                    ->dateTime()
+                    ->sortable(),
             ])
-            ->contentGrid([
-                'md' => 2,
-                'xl' => 3,
-            ])
+            ->defaultSort('created_at', 'desc')
             ->paginated(function (Table $table) {
                 $count = $table->getQuery()->count();
+
                 return $count >= 15 ? [10, 25, 50] : false;
             });
     }

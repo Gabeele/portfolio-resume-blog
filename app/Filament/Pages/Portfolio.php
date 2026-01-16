@@ -79,6 +79,19 @@ class Portfolio extends Page implements HasForms
                             ->columnSpanFull(),
                     ]),
 
+                Section::make('Public Resume')
+                    ->description('Select the resume that will be publicly displayed on your portfolio.')
+                    ->schema([
+                        Select::make('public_resume_id')
+                            ->label('Public Facing Resume')
+                            ->placeholder('Select a resume to display publicly')
+                            ->relationship('publicResume', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->helperText('Choose which resume visitors will see on your portfolio. Leave blank to hide resume.')
+                            ->columnSpanFull(),
+                    ]),
+
                 Section::make('Personal Information')
                     ->description('This information will be displayed publicly on your portfolio.')
                     ->schema([
@@ -237,6 +250,7 @@ class Portfolio extends Page implements HasForms
             'bio' => $user->bio,
             'slug' => $user->slug,
             'template' => $user->template,
+            'public_resume_id' => $user->public_resume_id,
         ]);
     }
 }
