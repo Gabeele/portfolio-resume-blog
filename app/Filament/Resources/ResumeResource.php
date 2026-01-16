@@ -4,9 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Enums\ResumeTemplate;
 use App\Filament\Resources\ResumeResource\Pages;
-use App\Filament\Resources\ResumeResource\RelationManagers\WorkExpereincesRelationManager;
-use App\Filament\Resources\ResumeResource\RelationManagers\WorkExperiencesRelationManager;
 use App\Models\Resume;
+use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -31,14 +30,13 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use UnitEnum;
 
 class ResumeResource extends Resource
 {
     protected static ?string $model = Resume::class;
-
     protected static ?string $slug = 'resumes';
-    protected static string|UnitEnum|null $navigationGroup = 'Portfolio';
+    protected static ?int $navigationSort = 2;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
     public static function form(Schema $schema): Schema
     {
