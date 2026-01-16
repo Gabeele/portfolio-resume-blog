@@ -20,7 +20,8 @@ class EducationResource extends Resource
     protected static ?string $model = Education::class;
 
     protected static ?string $slug = 'education';
-    protected static string|UnitEnum|null $navigationGroup = 'Portfolio';
+    protected static string|UnitEnum|null $navigationGroup = 'Repository';
+    protected static ?int $navigationSort = 3;
 
     public static function form(Schema $schema): Schema
     {
@@ -75,7 +76,10 @@ class EducationResource extends Resource
                 TextColumn::make('end')
                     ->date(),
             ])
-            ->paginated(fn(Table $table): int => 10);
+            ->paginated(function (Table $table) {
+                $count = $table->getQuery()->count();
+                return $count >= 15 ? [10, 25, 50] : false;
+            });
     }
 
     public static function getPages(): array

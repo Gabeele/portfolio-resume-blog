@@ -20,8 +20,8 @@ class ReferenceResource extends Resource
 
     protected static ?string $slug = 'references';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Portfolio';
-
+    protected static string|UnitEnum|null $navigationGroup = 'Repository';
+    protected static ?int $navigationSort = 7;
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -70,7 +70,10 @@ class ReferenceResource extends Resource
 
                 TextColumn::make('company'),
             ])
-            ->paginated(fn(Table $table): int => 10);;
+            ->paginated(function (Table $table) {
+                $count = $table->getQuery()->count();
+                return $count >= 15 ? [10, 25, 50] : false;
+            });;
     }
 
     public static function getPages(): array

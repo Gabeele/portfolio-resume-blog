@@ -19,7 +19,10 @@ class SummaryResource extends Resource
     protected static ?string $model = Summary::class;
 
     protected static ?string $slug = 'summaries';
-    protected static string|UnitEnum|null $navigationGroup = 'Portfolio';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Repository';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Schema $schema): Schema
     {
@@ -52,7 +55,10 @@ class SummaryResource extends Resource
                     ->html()
                     ->limit(50),
             ])
-            ->paginated(fn(Table $table): int => 10);;
+            ->paginated(function (Table $table) {
+                $count = $table->getQuery()->count();
+                return $count >= 15 ? [10, 25, 50] : false;
+            });
     }
 
     public static function getPages(): array

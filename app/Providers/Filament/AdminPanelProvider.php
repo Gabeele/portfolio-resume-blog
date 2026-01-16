@@ -44,7 +44,7 @@ class AdminPanelProvider extends PanelProvider
                 'account' => fn(Action $action) => $action->label('Account Settings')->url(Account::getUrl()),
             ])
             ->navigationGroups([
-                NavigationGroup::make('Portfolio')
+                NavigationGroup::make('Resume')
                     ->collapsible(false),
                 NavigationGroup::make('Blog')
                     ->icon('heroicon-o-document-text'),

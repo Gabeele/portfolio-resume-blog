@@ -20,8 +20,8 @@ class CertificateResource extends Resource
 {
     protected static ?string $model = Certificate::class;
     protected static ?string $slug = 'certificates';
-    protected static string|UnitEnum|null $navigationGroup = 'Portfolio';
-
+    protected static string|UnitEnum|null $navigationGroup = 'Repository';
+    protected static ?int $navigationSort = 6;
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -78,7 +78,10 @@ class CertificateResource extends Resource
                 'md' => 2,
                 'xl' => 3,
             ])
-            ->paginated(fn(Table $table): int => 10);
+            ->paginated(function (Table $table) {
+                $count = $table->getQuery()->count();
+                return $count >= 15 ? [10, 25, 50] : false;
+            });
     }
 
     public static function getPages(): array

@@ -21,8 +21,8 @@ class SkillResource extends Resource
     protected static ?string $model = Skill::class;
 
     protected static ?string $slug = 'skills';
-
-    protected static string|UnitEnum|null $navigationGroup = 'Portfolio';
+    protected static string|UnitEnum|null $navigationGroup = 'Repository';
+    protected static ?int $navigationSort = 5;
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -69,7 +69,10 @@ class SkillResource extends Resource
                     ->html()
                     ->limit(50),
             ])
-            ->paginated(fn(Table $table): int => 10);;
+            ->paginated(function (Table $table) {
+                $count = $table->getQuery()->count();
+                return $count >= 15 ? [10, 25, 50] : false;
+            });;
     }
 
     public static function getPages(): array

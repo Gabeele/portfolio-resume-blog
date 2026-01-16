@@ -20,8 +20,8 @@ class WorkExperienceResource extends Resource
 {
     protected static ?string $model = WorkExperience::class;
     protected static ?string $slug = 'work-experiences';
-    protected static string|UnitEnum|null $navigationGroup = 'Portfolio';
-
+    protected static string|UnitEnum|null $navigationGroup = 'Repository';
+    protected static ?int $navigationSort = 4;
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -74,7 +74,11 @@ class WorkExperienceResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->paginated(fn(Table $table): int => 10)->columns([
+            ->paginated(function (Table $table) {
+                $count = $table->getQuery()->count();
+                return $count >= 15 ? [10, 25, 50] : false;
+            })
+            ->columns([
                 TextColumn::make('business'),
                 TextColumn::make('location'),
                 TextColumn::make('role'),

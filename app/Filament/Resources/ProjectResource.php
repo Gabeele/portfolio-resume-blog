@@ -26,7 +26,9 @@ class ProjectResource extends Resource
 
     protected static ?string $slug = 'projects';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Portfolio';
+    protected static string|UnitEnum|null $navigationGroup = 'Repository';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {
@@ -92,7 +94,6 @@ class ProjectResource extends Resource
 
                                 TextColumn::make('role')
                                     ->label('Role')
-                                    ->toggleable()
                                     ->extraAttributes(['class' => 'text-sm text-gray-500']),
 
                                 TextColumn::make('description')
@@ -126,7 +127,10 @@ class ProjectResource extends Resource
                 'xl' => 2,
             ])
             ->defaultSort('created_at', 'desc')
-            ->paginated(fn(Table $table): int => 10);
+            ->paginated(function (Table $table) {
+                $count = $table->getQuery()->count();
+                return $count >= 15 ? [10, 25, 50] : false;
+            });
     }
 
     public static function getPages(): array
