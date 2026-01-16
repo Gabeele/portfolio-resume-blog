@@ -18,7 +18,6 @@ use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
@@ -72,12 +71,6 @@ class ResumeResource extends Resource
                                     ->default(false)
                                     ->inline()
                                     ->boolean(),
-
-                                Toggle::make('is_public')
-                                    ->label('Visible on Portfolio')
-                                    ->default(false)
-                                    ->helperText('If enabled, this resume appears on your public portfolio.')
-                                    ->columnSpanFull(),
 
                                 ToggleButtons::make('template')
                                     ->label('Template')

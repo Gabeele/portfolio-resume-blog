@@ -4,7 +4,6 @@ namespace App\Observers;
 
 use App\Enums\PortfolioTemplate;
 use App\Events\ResumeInfoChangeEvent;
-use App\Models\Atlas;
 use App\Models\Resume;
 use App\Models\User;
 use Illuminate\Support\Str;
@@ -13,10 +12,11 @@ class UserObserver
 {
     public function created(User $user): void
     {
-        $this->createDefaultAtlasForUser($user);
+        $this->setDefaultPortfolioDataForUser($user);
         $this->createDefaultSlugForUser($user);
 
     }
+
     public function saved(User $user): void
     {
         Resume::where('user_id', $user->id)
@@ -29,17 +29,16 @@ class UserObserver
             ->each(fn(Resume $resume) => ResumeInfoChangeEvent::dispatch($resume));
     }
 
-//    Todo maybe put this i a service
-    private function createDefaultAtlasForUser(User $user): void
+    //    Todo maybe put this i a service
+    private function setDefaultPortfolioDataForUser(User $user): void
     {
-        Atlas::create([
+        $user->update([
             'bio' => "Hi, I am $user->first_name",
             'template' => PortfolioTemplate::Standard,
-            'user_id' => $user->id
         ]);
     }
 
-//    todo maybe put this into a service
+    //    todo maybe put this into a service
     private function createDefaultSlugForUser(User $user): void
     {
         $base = Str::slug(
@@ -58,5 +57,4 @@ class UserObserver
             'slug' => $slug,
         ]);
     }
-
 }

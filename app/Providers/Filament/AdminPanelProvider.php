@@ -2,8 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Account;
 use App\Filament\Pages\Backups;
-use App\Filament\Pages\Profile;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Enums\AuthLayout;
@@ -41,11 +41,10 @@ class AdminPanelProvider extends PanelProvider
             ->topbar(false)
             ->databaseTransactions()
             ->userMenuItems([
-                'profile' => fn(Action $action) => $action->label('Edit profile')->url(Profile::getUrl()),
+                'account' => fn(Action $action) => $action->label('Account Settings')->url(Account::getUrl()),
             ])
             ->navigationGroups([
                 NavigationGroup::make('Portfolio')
-                    ->icon('heroicon-o-user-circle')
                     ->collapsible(false),
                 NavigationGroup::make('Blog')
                     ->icon('heroicon-o-document-text'),

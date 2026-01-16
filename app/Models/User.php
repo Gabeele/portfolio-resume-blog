@@ -12,22 +12,23 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
 #[ObservedBy(UserObserver::class)]
-class User extends Authenticatable implements HasAvatar, HasName, FilamentUser
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
 {
-    use HasFactory, Notifiable, TwoFactorAuthenticatable, HasRoles;
+    use HasFactory, HasRoles, Notifiable, TwoFactorAuthenticatable;
+
     protected $fillable = [
         'first_name',
         'last_name',
         'email',
         'password',
         'avatar_url',
+        'bio',
         'phone',
         'street',
         'city',
@@ -35,7 +36,7 @@ class User extends Authenticatable implements HasAvatar, HasName, FilamentUser
         'mailing_code',
         'country',
         'slug',
-        'template'
+        'template',
     ];
 
     /**
@@ -125,8 +126,8 @@ class User extends Authenticatable implements HasAvatar, HasName, FilamentUser
         return $this->hasMany(Tag::class);
     }
 
-    public function atlas(): HasOne
+    public function links(): HasMany
     {
-        return $this->hasOne(Atlas::class);
+        return $this->hasMany(Link::class);
     }
 }

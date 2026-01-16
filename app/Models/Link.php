@@ -13,7 +13,7 @@ class Link extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'atlas_id',
+        'user_id',
         'name',
         'url',
         'icon',
@@ -22,9 +22,9 @@ class Link extends Model
         'is_active',
     ];
 
-    public function atlas(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Atlas::class);
+        return $this->belongsTo(User::class);
     }
 
     protected function casts(): array

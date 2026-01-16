@@ -28,6 +28,7 @@ class ReachoutResource extends Resource
     protected static ?string $model = Reachout::class;
 
     protected static ?string $slug = 'reachouts';
+    protected static ?int $navigationSort = 10;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleBottomCenter;
 
