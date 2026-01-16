@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PostResource\Pages;
 use App\Models\Post;
+use BackedEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms;
@@ -17,6 +18,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
@@ -25,7 +27,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use UnitEnum as UnitEnumAlias;
 
 class PostResource extends Resource
 {
@@ -33,7 +34,9 @@ class PostResource extends Resource
 
     protected static ?string $slug = 'posts';
 
-    protected static string|null|UnitEnumAlias $navigationGroup = 'Blog';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
+
+    protected static ?int $navigationSort = 5;
 
     public static function form(Schema $schema): Schema
     {
@@ -45,17 +48,21 @@ class PostResource extends Resource
                     ->schema([
                         TextInput::make('title')
                             ->required()
-                            ->reactive()
-                            ->afterStateUpdated(fn($state, $set) => $set('slug', Str::slug($state)))
                             ->maxLength(255)
-                            ->placeholder('A clear, descriptive title'),
+                            ->placeholder('A clear, descriptive title')
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state))),
 
                         TextInput::make('slug')
                             ->required()
-                            ->disabled(fn(?Model $record) => (bool)$record) // disabled on edit
+                            ->disabled()
                             ->unique(Post::class, 'slug', fn($record) => $record)
                             ->maxLength(255)
-                            ->hint('URL friendly, auto-filled from title'),
+                            ->regex('/^[a-z0-9]+(?:-[a-z0-9]+)*$/')
+                            ->placeholder('Auto-generated from title, or customize it manually')
+                            ->validationMessages([
+                                'regex' => 'The slug must contain only lowercase letters, numbers, and hyphens.',
+                            ]),
 
                         Select::make('tags')
                             ->multiple()
@@ -63,7 +70,7 @@ class PostResource extends Resource
                             ->relationship('tags', 'name')
                             ->createOptionForm([
                                 TextInput::make('name')
-                                    ->required()
+                                    ->required(),
                             ])
                             ->hint('Select or create tags')
                             ->createOptionUsing(function (array $data): int {
@@ -222,7 +229,7 @@ class PostResource extends Resource
                                     ])
                                     ->columns(1),
                             ])
-                            ->columns(1)
+                            ->columns(1),
                     ]),
 
                 Section::make('SEO')
@@ -286,6 +293,11 @@ class PostResource extends Resource
                     ->sortable()
                     ->toggleable(),
 
+                TextColumn::make('tags.name')
+                    ->badge()
+                    ->searchable()
+                    ->toggleable(),
+
                 TextColumn::make('body')
                     ->label('Excerpt')
                     ->getStateUsing(function ($record) {
@@ -299,6 +311,7 @@ class PostResource extends Resource
                                     return Str::limit(strip_tags($block['content']), 120);
                                 }
                             }
+
                             return Str::limit(json_encode($record->body), 120);
                         }
 
@@ -371,4 +384,3 @@ class PostResource extends Resource
         ];
     }
 }
-
