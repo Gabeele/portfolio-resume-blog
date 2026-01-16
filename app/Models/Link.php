@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\Icon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,7 +15,6 @@ class Link extends Model
         'user_id',
         'name',
         'url',
-        'icon',
         'description',
         'order',
         'is_active',
@@ -32,7 +30,6 @@ class Link extends Model
         return [
             'is_active' => 'boolean',
             'order' => 'integer',
-            'icon' => Icon::class,
         ];
     }
 }

@@ -12,7 +12,6 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('name');
             $table->string('url');
-            $table->string('icon')->nullable();
             $table->string('description')->nullable();
             $table->integer('order')->default(0);
             $table->boolean('is_active')->default(true);

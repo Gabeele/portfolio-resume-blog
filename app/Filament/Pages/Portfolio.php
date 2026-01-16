@@ -2,7 +2,6 @@
 
 namespace App\Filament\Pages;
 
-use App\Enums\Icon;
 use App\Enums\PortfolioTemplate;
 use App\Rules\MailingCodeRule;
 use Filament\Actions\Action;
@@ -38,7 +37,9 @@ class Portfolio extends Page implements HasForms
     protected static ?string $navigationLabel = 'Portfolio';
 
     protected static ?int $navigationSort = 0;
+
     public ?array $data = [];
+
     protected string $view = 'filament.pages.portfolio';
 
     public function form(Schema $schema): Schema
@@ -130,47 +131,36 @@ class Portfolio extends Page implements HasForms
                             ->relationship('links')
                             ->orderColumn('order')
                             ->reorderableWithButtons()
-                            ->collapsible()
                             ->defaultItems(0)
-                            ->collapsed()
                             ->schema([
-                                Grid::make()->columns(12)->schema([
-                                    TextInput::make('name')
-                                        ->label('Label')
-                                        ->required()
-                                        ->maxLength(50)
-                                        ->columnSpan(4)
-                                        ->placeholder('e.g. GitHub, Portfolio'),
+                                TextInput::make('name')
+                                    ->label('Link Name')
+                                    ->required()
+                                    ->maxLength(50)
+                                    ->placeholder('e.g. GitHub, LinkedIn, Portfolio'),
 
-                                    TextInput::make('url')
-                                        ->label('URL')
-                                        ->url()
-                                        ->required()
-                                        ->columnSpan(5)
-                                        ->placeholder('https://'),
+                                TextInput::make('url')
+                                    ->label('URL')
+                                    ->url()
+                                    ->required()
+                                    ->placeholder('https://'),
 
-                                    Select::make('icon')
-                                        ->label('Icon')
-                                        ->options(Icon::class)
-                                        ->searchable()
-                                        ->columnSpan(3),
+                                TextInput::make('description')
+                                    ->label('Description (optional)')
+                                    ->maxLength(255)
+                                    ->placeholder('e.g. "Open for work" or a short note'),
 
-                                    TextInput::make('description')
-                                        ->label('Extra text')
-                                        ->maxLength(255)
-                                        ->columnSpan(12)
-                                        ->placeholder('Optional — e.g. "Open for work" or a short note.'),
-
-                                    Toggle::make('is_active')
-                                        ->label('Visible')
-                                        ->inline()
-                                        ->default(true)
-                                        ->columnSpan(3)
-                                        ->helperText('If off, the link will be hidden from public view.'),
-                                ]),
+                                Toggle::make('is_active')
+                                    ->label('Show on portfolio')
+                                    ->inline(false)
+                                    ->default(true),
                             ])
+                            ->columns(2)
                             ->itemLabel(fn(?array $state): string => ($state['name'] ?? 'New link') . ' — ' . (isset($state['url']) ? Str::limit($state['url'], 40) : 'no url'))
-                            ->addActionLabel('Add Link'),
+                            ->addActionLabel('Add Link')
+                            ->deleteAction(
+                                fn($action) => $action->requiresConfirmation()
+                            ),
                     ]),
 
                 Section::make('Address')
