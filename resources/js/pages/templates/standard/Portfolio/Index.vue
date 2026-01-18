@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Head } from '@inertiajs/vue3';
-import Layout from '@/layouts/settings/Layout.vue';
+import Layout from '../Layout.vue';
 
 interface Resume {
     user: {

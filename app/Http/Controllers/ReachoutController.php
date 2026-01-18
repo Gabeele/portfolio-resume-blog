@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ReachoutController extends Controller
 {
+
+    // TODO remove this?
     use AuthorizesRequests;
 
     public function index()

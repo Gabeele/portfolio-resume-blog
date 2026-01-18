@@ -14,7 +14,7 @@ class PreviewPortfolioController extends Controller
 
         $template = Str::studly($resume->user?->template?->value ?? (string)$resume->user?->template ?? 'standard');
 
-        return Inertia::render("Preview/Portfolio/{$template}", [
+        return Inertia::render("templates/standard/Portfolio/{$template}", [
             'resume' => $resume
         ]);
     }

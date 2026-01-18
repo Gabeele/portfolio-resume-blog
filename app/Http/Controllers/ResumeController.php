@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Analytic;
 use App\Models\Resume;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\File;
@@ -26,8 +27,11 @@ class ResumeController extends Controller
                 ->save($fullPath);
         }
 
+        // Track resume download
+        Analytic::track('resume_download', $resume->user, $resume);
+
         return response()->file($fullPath, [
-            'Content-Disposition' => "inline; filename=\"{$resume->user->first_name}_Resume.pdf\""
+            'Content-Disposition' => "inline; filename=\"{$resume->user->first_name}_Resume.pdf\"",
         ]);
     }
 }

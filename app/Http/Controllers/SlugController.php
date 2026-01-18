@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Analytic;
 use App\Models\Resume;
 use App\Models\Scopes\CurrentUserScope;
 use App\Models\User;
@@ -37,9 +38,11 @@ class SlugController extends Controller
 
         abort_if(!$resume, 404);
 
+        Analytic::track('portfolio_view', $user, $resume);
+
         $template = Str::studly($user->template?->value ?? (string)$user->template ?? 'standard');
 
-        return Inertia::render("Preview/Portfolio/{$template}", [
+        return Inertia::render("templates/{$user->template->value}/Portfolio/index", [
             'resume' => $resume,
         ]);
     }

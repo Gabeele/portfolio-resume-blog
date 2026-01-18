@@ -58,9 +58,24 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
         return true;
     }
 
-    public function siteUrl()
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    public function siteUrl(): string
     {
         return config('app.url') . "/$this->slug";
+    }
+
+    public function blogUrl(): string
+    {
+        return $this->siteUrl() . '/blog';
+    }
+
+    public function linksUrl(): string
+    {
+        return $this->siteUrl() . '/links';
     }
 
     /**
@@ -136,5 +151,15 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
     public function links(): HasMany
     {
         return $this->hasMany(Link::class);
+    }
+
+    public function analytics(): HasMany
+    {
+        return $this->hasMany(Analytic::class);
+    }
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
     }
 }
