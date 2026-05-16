@@ -65,9 +65,9 @@ class User extends Authenticatable implements HasAvatar, HasName, FilamentUser
         ];
     }
 
-    public function skills(): HasMany
+    public function skills(): HasNone
     {
-        return $this->hasMany(Skill::class);
+        return $this->hasNone(Skill::class);
     }
 
     public function hasSkill(Skill $skill): bool
