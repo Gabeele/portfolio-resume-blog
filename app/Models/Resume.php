@@ -1,0 +1,91 @@
+<?php
+
+namespace App\Models;
+
+use App\Enums\ResumeTemplate;
+use App\Models\Scopes\CurrentUserScope;
+use App\Observers\ResumeObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+#[ScopedBy(CurrentUserScope::class)]
+#[ObservedBy(ResumeObserver::class)]
+class Resume extends Model
+{
+    use HasFactory, SoftDeletes;
+
+    protected $fillable = [
+        'user_id',
+        'name',
+        'tags',
+        'show_avatar',
+        'template'
+    ];
+
+    protected $casts = [
+        'tags' => 'array',
+        'show_avatar' => 'boolean',
+        'template' => ResumeTemplate::class
+    ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function skills(): BelongsToMany
+    {
+        return $this->belongsToMany(Skill::class, 'resume_skill', 'resume_id', 'skill_id');
+    }
+
+    public function certificates(): BelongsToMany
+    {
+        return $this->belongsToMany(Certificate::class, 'resume_certificate', 'resume_id', 'certificate_id');
+    }
+
+    public function education(): BelongsToMany
+    {
+        return $this->belongsToMany(Education::class, 'resume_education', 'resume_id', 'education_id');
+    }
+
+    public function projects(): BelongsToMany
+    {
+        return $this->belongsToMany(Project::class, 'resume_project', 'resume_id', 'project_id');
+    }
+
+    public function references(): BelongsToMany
+    {
+        return $this->belongsToMany(Reference::class, 'resume_reference', 'resume_id', 'reference_id');
+    }
+
+    public function summaries(): BelongsToMany
+    {
+        return $this->belongsToMany(Summary::class, 'resume_summary', 'resume_id', 'summary_id');
+    }
+
+    public function workExperiences(): BelongsToMany
+    {
+        return $this->belongsToMany(WorkExperience::class, 'resume_work_experience', 'resume_id', 'work_experience_id');
+    }
+
+    public function getStoragePath(bool $fullPath = true): string
+    {
+        $user = $this->user;
+        $relativePath = "resumes/$user->id/$this->id.pdf";
+
+        return $fullPath ? storage_path("app/$relativePath") : $relativePath;
+    }
+
+
+    protected function casts(): array
+    {
+        return [
+            'tags' => 'array'
+        ];
+    }
+}

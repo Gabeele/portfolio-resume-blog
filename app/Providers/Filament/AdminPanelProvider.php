@@ -2,10 +2,18 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Backups;
+use App\Filament\Pages\Profile;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
+use Caresome\FilamentAuthDesigner\Enums\AuthLayout;
+use DutchCodingCompany\FilamentDeveloperLogins\FilamentDeveloperLoginsPlugin;
+use Filament\Actions\Action;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -18,6 +26,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Pboivin\FilamentPeek\FilamentPeekPlugin;
+use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -28,8 +38,20 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->topbar(false)
+            ->databaseTransactions()
+            ->userMenuItems([
+                'profile' => fn(Action $action) => $action->label('Edit profile')->url(Profile::getUrl()),
+            ])
+            ->navigationGroups([
+                NavigationGroup::make('Portfolio')
+                    ->icon('heroicon-o-user-circle')
+                    ->collapsible(false),
+                NavigationGroup::make('Admin'),
+            ])
+            ->brandName('Paperclip')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Indigo,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
@@ -41,6 +63,24 @@ class AdminPanelProvider extends PanelProvider
                 AccountWidget::class,
                 FilamentInfoWidget::class,
             ])
+            ->plugins(
+                [
+                    FilamentPeekPlugin::make(),
+                    FilamentShieldPlugin::make()
+                        ->navigationGroup('Admin'),
+                    FilamentDeveloperLoginsPlugin::make()
+                        ->enabled(app()->environment('local'))
+                        ->switchable(true)
+                        ->users([
+                            'Test' => 'test@example.com',
+                            'Admin' => 'admin@example.com',
+                        ]),
+                    AuthDesignerPlugin::make()
+                        ->login(layout: AuthLayout::None),
+                    FilamentSpatieLaravelBackupPlugin::make()
+                        ->usingPage(Backups::class),
+
+                ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
