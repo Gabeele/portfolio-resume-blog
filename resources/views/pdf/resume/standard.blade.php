@@ -10,279 +10,372 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            padding: 40px;
-            max-width: 800px;
+            font-family: 'Times New Roman', Times, serif;
+            line-height: 1.5;
+            color: #000;
+            padding: 0.75in;
+            max-width: 8.5in;
             margin: 0 auto;
+            background: #fff;
         }
 
-        /* Header layout: avatar on the left, contact on the right */
+        /* Header */
         .header {
-            display: grid;
-            grid-template-columns: 120px 1fr;
-            gap: 20px;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #333;
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #000;
         }
 
-        .avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f0f0f0;
-            font-size: 36px;
-            color: #555;
-        }
-
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .header-info {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .header-info h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 2px;
+        .header h1 {
+            font-size: 24pt;
+            font-weight: bold;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
         }
 
         .contact {
-            font-size: 14px;
-            color: #666;
+            font-size: 11pt;
+            color: #333;
         }
 
-        .contact .line {
-            margin-bottom: 4px;
+        .contact-line {
+            display: inline;
+            margin: 0 8px;
         }
 
+        .contact-line:first-child {
+            margin-left: 0;
+        }
+
+        .contact-separator {
+            margin: 0 4px;
+        }
+
+        /* Sections */
         .section {
-            margin-bottom: 25px;
+            margin-bottom: 18px;
         }
 
         .section-title {
-            font-size: 20px;
+            font-size: 14pt;
             font-weight: bold;
-            margin-bottom: 15px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #ddd;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            padding-bottom: 3px;
+            border-bottom: 1.5px solid #000;
+            letter-spacing: 1px;
         }
 
+        /* Summary */
         .summary p {
+            font-size: 11pt;
             text-align: justify;
-        }
-
-        .work-experience-item,
-        .education-item,
-        .project-item {
-            margin-bottom: 20px;
-        }
-
-        .work-experience-item h3,
-        .education-item h3,
-        .project-item h3 {
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-
-        .meta {
-            font-size: 14px;
-            color: #666;
             margin-bottom: 8px;
         }
 
-        .description {
-            font-size: 14px;
-            margin-top: 8px;
+        /* Experience Items */
+        .experience-item {
+            margin-bottom: 14px;
         }
 
-        .skills-list {
+        .experience-header {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 2px;
+        }
+
+        .experience-title {
+            font-size: 12pt;
+            font-weight: bold;
+        }
+
+        .experience-dates {
+            font-size: 10pt;
+            font-style: italic;
+            color: #333;
+        }
+
+        .experience-company {
+            font-size: 11pt;
+            font-style: italic;
+            margin-bottom: 4px;
+        }
+
+        .experience-location {
+            font-size: 10pt;
+            color: #555;
+            margin-bottom: 4px;
+        }
+
+        .experience-description {
+            font-size: 11pt;
+            text-align: justify;
+        }
+
+        /* Education Items */
+        .education-item {
+            margin-bottom: 12px;
+        }
+
+        .education-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 2px;
+        }
+
+        .education-degree {
+            font-size: 12pt;
+            font-weight: bold;
+        }
+
+        .education-dates {
+            font-size: 10pt;
+            font-style: italic;
+            color: #333;
+        }
+
+        .education-school {
+            font-size: 11pt;
+            font-style: italic;
+            margin-bottom: 4px;
+        }
+
+        .education-description {
+            font-size: 11pt;
+            text-align: justify;
+        }
+
+        /* Skills */
+        .skills-list {
+            font-size: 11pt;
+            line-height: 1.6;
         }
 
         .skill-item {
-            background-color: #f4f4f4;
-            padding: 5px 12px;
-            border-radius: 4px;
-            font-size: 14px;
+            display: inline;
         }
 
-        .certificates-list, .references-list {
+        .skill-item:after {
+            content: " • ";
+            margin: 0 6px;
+        }
+
+        .skill-item:last-child:after {
+            content: "";
+        }
+
+        /* Projects */
+        .project-item {
+            margin-bottom: 14px;
+        }
+
+        .project-title {
+            font-size: 12pt;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .project-role {
+            font-size: 10pt;
+            font-style: italic;
+            color: #555;
+            margin-bottom: 4px;
+        }
+
+        .project-description {
+            font-size: 11pt;
+            text-align: justify;
+            margin-bottom: 4px;
+        }
+
+        .project-links {
+            font-size: 10pt;
+            color: #0066cc;
+        }
+
+        .project-links a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        /* Certifications */
+        .certificates-list {
             list-style: none;
+            padding: 0;
         }
 
-        .tags {
-            margin-top: 10px;
-            font-size: 12px;
-            color: #666;
+        .certificates-list li {
+            font-size: 11pt;
+            margin-bottom: 6px;
+            padding-left: 15px;
+            position: relative;
         }
 
-        @media (max-width: 600px) {
-            .header {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
+        .certificates-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+        }
 
-            .header-info {
-                align-items: center;
+        /* References */
+        .references-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-list li {
+            font-size: 11pt;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .reference-name {
+            font-weight: bold;
+        }
+
+        .reference-title {
+            font-style: italic;
+        }
+
+        /* Print optimization */
+        @media print {
+            body {
+                padding: 0.5in;
             }
+        }
+
+        @page {
+            size: letter;
+            margin: 0;
         }
     </style>
 </head>
 <body>
+
+<!-- Header -->
 <div class="header">
-    {{-- Avatar column --}}
-    @if($resume->user->avatar_url)
-        <div class="avatar">
-            <img src="{{ $resume->user->avatar_url }}"
-                 alt="{{ $resume->user->first_name }} {{ $resume->user->last_name }}'s avatar">
-        </div>
-    @endif
+    <h1>{{ $resume->user->first_name }} {{ $resume->user->last_name }}</h1>
 
-    {{-- Contact / name column --}}
-    <div class="header-info">
-        <h1>{{ $resume->user->first_name }} {{ $resume->user->last_name }}</h1>
+    <div class="contact">
+        @if($resume->user->email)
+            <span class="contact-line">{{ $resume->user->email }}</span>
+        @endif
 
-        <div class="contact">
-            @if($resume->user->email)
-                <div class="line">Email: <a href="mailto:{{ $resume->user->email }}">{{ $resume->user->email }}</a>
-                </div>
-            @endif
+        @if($resume->user->phone)
+            @if($resume->user->email)<span class="contact-separator">|</span>@endif
+            <span class="contact-line">{{ $resume->user->phone }}</span>
+        @endif
 
-            @if($resume->user->phone)
-                <div class="line">Phone: {{ $resume->user->phone }}</div>
-            @endif
+        @php
+            $addressParts = array_filter([
+                $resume->user->city ?: null,
+                $resume->user->region ?: null,
+                $resume->user->country ?: null,
+            ]);
+        @endphp
 
-            {{-- Full address line composed only when values exist --}}
-            @php
-                $addressParts = array_filter([
-                    $resume->user->street ?: null,
-                    $resume->user->city ?: null,
-                    $resume->user->region ?: null,
-                    $resume->user->mailing_code ?: null,
-                    $resume->user->country ?: null,
-                ]);
-            @endphp
-
-            @if(!empty($addressParts))
-                <div class="line">Address: {{ implode(', ', $addressParts) }}</div>
-            @endif
-
-            {{-- Helpful small tag for country-specific notes, e.g. UK --}}
-            @if(strtolower($resume->user->country ?? '') === 'uk' || strtolower($resume->user->country ?? '') === 'united kingdom' || strtolower($resume->user->country ?? '') === 'gb')
-                <div class="line">Note: UK address shown — ensure mailing code (postcode) format is correct.</div>
-            @endif
-        </div>
+        @if(!empty($addressParts))
+            @if($resume->user->email || $resume->user->phone)<span class="contact-separator">|</span>@endif
+            <span class="contact-line">{{ implode(', ', $addressParts) }}</span>
+        @endif
     </div>
 </div>
 
-{{-- Summary --}}
+<!-- Summary -->
 @if($resume->summaries->isNotEmpty())
     <div class="section summary">
-        <h2 class="section-title">Summary</h2>
+        <h2 class="section-title">Professional Summary</h2>
         @foreach($resume->summaries as $summary)
             <p>{{ $summary->body }}</p>
         @endforeach
     </div>
 @endif
 
-{{-- Work --}}
+<!-- Work Experience -->
 @if($resume->workExperiences->isNotEmpty())
     <div class="section">
-        <h2 class="section-title">Work Experience</h2>
+        <h2 class="section-title">Professional Experience</h2>
         @foreach($resume->workExperiences as $work)
-            <div class="work-experience-item">
-                <h3>{{ $work->role }} - {{ $work->business }}</h3>
-                <div class="meta">
-                    @if($work->location)
-                        {{ $work->location }} |
-                    @endif
-                    {{ $work->start->format('M Y') }} -
-                    {{ $work->end ? $work->end->format('M Y') : 'Present' }}
+            <div class="experience-item">
+                <div class="experience-header">
+                    <span class="experience-title">{{ $work->role }}</span>
+                    <span class="experience-dates">
+                        {{ $work->start->format('M Y') }} - {{ $work->end ? $work->end->format('M Y') : 'Present' }}
+                    </span>
                 </div>
+                <div class="experience-company">{{ $work->business }}</div>
+                @if($work->location)
+                    <div class="experience-location">{{ $work->location }}</div>
+                @endif
                 @if($work->description)
-                    <div class="description">{{ $work->description }}</div>
+                    <div class="experience-description">{{ $work->description }}</div>
                 @endif
             </div>
         @endforeach
     </div>
 @endif
 
-{{-- Education --}}
+<!-- Education -->
 @if($resume->education->isNotEmpty())
     <div class="section">
         <h2 class="section-title">Education</h2>
         @foreach($resume->education as $edu)
             <div class="education-item">
-                <h3>{{ $edu->certificate }} - {{ $edu->school }}</h3>
-                <div class="meta">
-                    {{ $edu->start->format('Y') }} - {{ $edu->end ? $edu->end->format('Y') : 'Present' }}
+                <div class="education-header">
+                    <span class="education-degree">{{ $edu->certificate }}</span>
+                    <span class="education-dates">
+                        {{ $edu->start->format('Y') }} - {{ $edu->end ? $edu->end->format('Y') : 'Present' }}
+                    </span>
                 </div>
+                <div class="education-school">{{ $edu->school }}</div>
                 @if($edu->description)
-                    <div class="description">{{ $edu->description }}</div>
+                    <div class="education-description">{{ $edu->description }}</div>
                 @endif
             </div>
         @endforeach
     </div>
 @endif
 
-{{-- Skills --}}
+<!-- Skills -->
 @if($resume->skills->isNotEmpty())
     <div class="section">
         <h2 class="section-title">Skills</h2>
         <div class="skills-list">
             @foreach($resume->skills as $skill)
-                <div class="skill-item">
-                    {{ $skill->name }}
-                    @if($skill->proficiency)
-                        ({{ $skill->proficiency->value }})
-                    @endif
-                </div>
+                <span class="skill-item">
+                    {{ $skill->name }}@if($skill->proficiency) ({{ $skill->proficiency->value }})@endif
+                </span>
             @endforeach
         </div>
     </div>
 @endif
 
-{{-- Projects --}}
+<!-- Projects -->
 @if($resume->projects->isNotEmpty())
     <div class="section">
         <h2 class="section-title">Projects</h2>
         @foreach($resume->projects as $project)
             <div class="project-item">
-                <h3>{{ $project->title }}</h3>
+                <div class="project-title">{{ $project->title }}</div>
                 @if($project->role)
-                    <div class="meta">Role: {{ $project->role }}</div>
+                    <div class="project-role">{{ $project->role }}</div>
                 @endif
                 @if($project->description)
-                    <div class="description">{{ $project->description }}</div>
+                    <div class="project-description">{{ $project->description }}</div>
                 @endif
                 @if($project->url || $project->repo)
-                    <div class="meta" style="margin-top: 5px;">
+                    <div class="project-links">
                         @if($project->url)
                             <a href="{{ $project->url }}">{{ $project->url }}</a>
                         @endif
+                        @if($project->url && $project->repo) | @endif
                         @if($project->repo)
-                                @if($project->url)
-                                    |
-                                @endif
-                            <a href="{{ $project->repo }}">Repository</a>
+                            <a href="{{ $project->repo }}">{{ $project->repo }}</a>
                         @endif
                     </div>
                 @endif
@@ -291,16 +384,40 @@
     </div>
 @endif
 
-{{-- Certifications --}}
+<!-- Certifications -->
 @if($resume->certificates->isNotEmpty())
     <div class="section">
         <h2 class="section-title">Certifications</h2>
         <ul class="certificates-list">
             @foreach($resume->certificates as $cert)
                 <li>
-                    <strong>{{ $cert->name }}</strong>
-                    @if($cert->description)
-                        - {{ $cert->description }}
+                    <strong>{{ $cert->name }}</strong>@if($cert->description) - {{ $cert->description }}@endif
+                </li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+<!-- References -->
+@if($resume->references->isNotEmpty())
+    <div class="section">
+        <h2 class="section-title">References</h2>
+        <ul class="references-list">
+            @foreach($resume->references as $reference)
+                <li>
+                    <div class="reference-name">{{ $reference->name }}</div>
+                    @if($reference->title || $reference->company)
+                        <div class="reference-title">
+                            @if($reference->title){{ $reference->title }}@endif
+                            @if($reference->title && $reference->company), @endif
+                            @if($reference->company){{ $reference->company }}@endif
+                        </div>
+                    @endif
+                    @if($reference->email)
+                        <div>{{ $reference->email }}</div>
+                    @endif
+                    @if($reference->phone)
+                        <div>{{ $reference->phone }}</div>
                     @endif
                 </li>
             @endforeach
@@ -308,30 +425,5 @@
     </div>
 @endif
 
-{{-- References --}}
-@if($resume->references->isNotEmpty())
-    <div class="section">
-        <h2 class="section-title">References</h2>
-        <ul class="references-list">
-            @foreach($resume->references as $reference)
-                <li>
-                    <strong>{{ $reference->name }}</strong><br>
-                    @if($reference->title)
-                        {{ $reference->title }}
-                    @endif
-                    @if($reference->company)
-                        @ {{ $reference->company }}
-                    @endif
-                    @if($reference->email)
-                        <br>Email: {{ $reference->email }}
-                    @endif
-                    @if($reference->phone)
-                        <br>Phone: {{ $reference->phone }}
-                    @endif
-                </li>
-            @endforeach
-        </ul>
-    </div>
-@endif
 </body>
 </html>

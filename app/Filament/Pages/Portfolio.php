@@ -235,7 +235,7 @@ class Portfolio extends Page implements HasForms
 
     public function mount(): void
     {
-        $user = Auth::user();
+        $user = Auth::user()->load('publicResume', 'links');
 
         $this->form->fill([
             'first_name' => $user->first_name,

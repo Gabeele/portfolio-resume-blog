@@ -24,7 +24,6 @@ class SlugController extends Controller
                 'projects',
                 'references',
                 'summaries',
-                'user',
                 'workExperiences',
                 'certificates',
             ]);
@@ -40,10 +39,36 @@ class SlugController extends Controller
 
         Analytic::track('portfolio_view', $user, $resume);
 
+        // Get recent published blog posts
+        $recentPosts = $user->posts()
+            ->where('publish', true)
+            ->latest('published_at')
+            ->take(3)
+            ->get(['id', 'title', 'slug', 'published_at']);
+
+        // Get active links
+        $links = $user->links()
+            ->where('is_active', true)
+            ->orderBy('order')
+            ->get(['id', 'name', 'url', 'description']);
+
         $template = Str::studly($user->template?->value ?? (string)$user->template ?? 'standard');
 
-        return Inertia::render("templates/{$user->template->value}/Portfolio/index", [
+        return Inertia::render("templates/{$user->template->value}/Portfolio/Index", [
+            'user' => [
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'email' => $user->email,
+                'bio' => $user->bio,
+                'avatar_url' => $user->avatar_url,
+                'slug' => $user->slug,
+                'public_resume_id' => $user->public_resume_id,
+            ],
             'resume' => $resume,
+            'recentPosts' => $recentPosts,
+            'links' => $links,
+            'hasBlog' => $user->posts()->where('publish', true)->exists(),
+            'hasLinks' => $user->links()->where('is_active', true)->exists(),
         ]);
     }
 }
